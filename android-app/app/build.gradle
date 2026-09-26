@@ -10,8 +10,8 @@ android {
         applicationId 'com.psaimusic.stoffisstudio'
         minSdk 26
         targetSdk 35
-        versionCode 6
-        versionName '0.6.0'
+        versionCode 7
+        versionName '0.7.0'
     }
 
     buildTypes {
@@ -27,7 +27,6 @@ android {
     }
 }
 
-// Bundle the current web studio directly from the repository into the APK.
 def repoRoot = rootProject.projectDir.parentFile
 def generatedAssets = layout.buildDirectory.dir('generated/stoffisAssets')
 
@@ -43,7 +42,6 @@ tasks.register('prepareStoffisWebAssets', Copy) {
         include '**/*.js'
         into 'www/src'
     }
-    // Production 2D/3D character assets, config, textures and reference metadata.
     from(new File(repoRoot, 'assets')) {
         include '**/*'
         into 'www/assets'
