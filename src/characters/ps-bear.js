@@ -106,6 +106,8 @@ export class PSBear {
       muzzle: physical(0xd8a16c, .95, 0, { sheen: .12, sheenColor: 0xffd5aa }),
       hoodie: physical(0x090a0d, .86, .01, { sheen: .12, sheenColor: 0x253040, sheenRoughness: .82 }),
       hoodie2: physical(0x11131a, .78, .02, { sheen: .08, sheenColor: 0x353b4b }),
+      cap: physical(0x11131a, .82, .02, { sheen: .06, sheenColor: 0x30343f }),
+      glasses: physical(0x040405, .34, .18, { clearcoat: .20, clearcoatRoughness: .34 }),
       black: physical(0x040405, .38, .22, { clearcoat: .16, clearcoatRoughness: .4 }),
       eyeWhite: physical(0xf5f1e9, .18, .08, { clearcoat: .65, clearcoatRoughness: .16 }),
       iris: physical(0x35170a, .18, .06, { clearcoat: .72, clearcoatRoughness: .12 }),
@@ -140,20 +142,29 @@ export class PSBear {
     this.torso.position.set(0, 1.76, 0);
     this.root.add(this.torso);
 
-    this.torso.add(sphere(this.materials.hoodie, [1.0,1.12,.71]));
-    this.torso.add(sphere(this.materials.hoodie2, [.94,.34,.71], [0,-.5,.05]));
+    // Fur body stays below clothing so the hoodie can be switched off in the builder.
+    this.bodyFur = sphere(this.materials.fur, [.88,1.04,.63]);
+    this.torso.add(this.bodyFur);
+
+    this.hoodieGroup = new THREE.Group();
+    this.hoodieGroup.name = 'BUILDER_HOODIE';
+    this.torso.add(this.hoodieGroup);
+
+    this.hoodieBody = sphere(this.materials.hoodie, [1.0,1.12,.71]);
+    this.hoodieBand = sphere(this.materials.hoodie2, [.94,.34,.71], [0,-.5,.05]);
+    this.hoodieGroup.add(this.hoodieBody, this.hoodieBand);
 
     this.hood = new THREE.Mesh(new THREE.TorusGeometry(.66,.16,22,72,Math.PI * 1.6), this.materials.hoodie2);
     this.hood.position.set(0,.72,-.44);
     this.hood.rotation.set(.05,0,.68);
     this.hood.castShadow = true;
-    this.torso.add(this.hood);
+    this.hoodieGroup.add(this.hood);
 
     const drawL = cylinder(this.materials.black,.018,.018,.48,[-.17,.34,.69],14);
     const drawR = cylinder(this.materials.black,.018,.018,.48,[.17,.34,.69],14);
-    this.torso.add(drawL, drawR);
-    this.torso.add(sphere(this.materials.black,[.042,.06,.042],[-.17,.09,.69],18));
-    this.torso.add(sphere(this.materials.black,[.042,.06,.042],[.17,.09,.69],18));
+    const tipL = sphere(this.materials.black,[.042,.06,.042],[-.17,.09,.69],18);
+    const tipR = sphere(this.materials.black,[.042,.06,.042],[.17,.09,.69],18);
+    this.hoodieGroup.add(drawL, drawR, tipL, tipR);
   }
 
   _buildArms() {
@@ -163,15 +174,26 @@ export class PSBear {
     this.rightArm.position.set(.96,2.18,0);
     this.root.add(this.leftArm, this.rightArm);
 
-    const makeArm = group => {
-      group.add(sphere(this.materials.hoodie,[.34,.72,.39],[0,-.47,0]));
+    const makeArm = (group, side) => {
+      const furArm = sphere(this.materials.fur,[.30,.68,.33],[0,-.47,0]);
+      group.add(furArm);
+
+      const sleeve = new THREE.Group();
+      sleeve.name = `BUILDER_SLEEVE_${side}`;
+      sleeve.add(sphere(this.materials.hoodie,[.34,.72,.39],[0,-.47,0]));
+      group.add(sleeve);
+
       const paw = sphere(this.materials.fur,[.35,.34,.37],[0,-1.0,.02]);
       const palm = sphere(this.materials.furLight,[.22,.12,.22],[0,-1.05,.34]);
       group.add(paw,palm);
-      return paw;
+      return { paw, sleeve };
     };
-    this.leftPaw = makeArm(this.leftArm);
-    this.rightPaw = makeArm(this.rightArm);
+    const left = makeArm(this.leftArm, 'L');
+    const right = makeArm(this.rightArm, 'R');
+    this.leftPaw = left.paw;
+    this.rightPaw = right.paw;
+    this.leftSleeve = left.sleeve;
+    this.rightSleeve = right.sleeve;
   }
 
   _buildHead() {
@@ -179,11 +201,17 @@ export class PSBear {
     this.head.position.set(0,3.16,0);
     this.root.add(this.head);
 
-    const earL = sphere(this.materials.fur,[.40,.40,.25],[-.67,.28,-.05]);
-    const earR = sphere(this.materials.fur,[.40,.40,.25],[.67,.28,-.05]);
-    const earLi = sphere(this.materials.furLight,[.25,.25,.14],[-.67,.28,.11]);
-    const earRi = sphere(this.materials.furLight,[.25,.25,.14],[.67,.28,.11]);
-    this.head.add(earL,earR,earLi,earRi);
+    this.earL = new THREE.Group();
+    this.earR = new THREE.Group();
+    this.earL.name = 'BUILDER_EAR_L';
+    this.earR.name = 'BUILDER_EAR_R';
+    this.earL.position.set(-.67,.28,-.05);
+    this.earR.position.set(.67,.28,-.05);
+    this.earL.add(sphere(this.materials.fur,[.40,.40,.25]));
+    this.earR.add(sphere(this.materials.fur,[.40,.40,.25]));
+    this.earL.add(sphere(this.materials.furLight,[.25,.25,.14],[0,0,.16]));
+    this.earR.add(sphere(this.materials.furLight,[.25,.25,.14],[0,0,.16]));
+    this.head.add(this.earL,this.earR);
 
     this.headMesh = sphere(this.materials.fur,[.86,.82,.74]);
     this.head.add(this.headMesh);
@@ -242,7 +270,11 @@ export class PSBear {
   }
 
   _buildGlasses() {
-    const frameMaterial = this.materials.black;
+    const frameMaterial = this.materials.glasses;
+    this.glassesGroup = new THREE.Group();
+    this.glassesGroup.name = 'BUILDER_GLASSES';
+    this.head.add(this.glassesGroup);
+
     const frame = (cx) => {
       const g = new THREE.Group();
       g.position.set(cx,.17,.90);
@@ -251,39 +283,68 @@ export class PSBear {
       g.add(box(frameMaterial,[w,t,d],[0,-h/2,0]));
       g.add(box(frameMaterial,[t,h,d],[-w/2,0,0]));
       g.add(box(frameMaterial,[t,h,d],[w/2,0,0]));
-      this.head.add(g);
+      this.glassesGroup.add(g);
     };
     frame(-.31); frame(.31);
-    this.head.add(box(frameMaterial,[.18,.05,.06],[0,.17,.90]));
-    const sideL = box(frameMaterial,[.38,.045,.05],[-.81,.19,.73]); sideL.rotation.y=.18; this.head.add(sideL);
-    const sideR = box(frameMaterial,[.38,.045,.05],[.81,.19,.73]); sideR.rotation.y=-.18; this.head.add(sideR);
+    this.glassesGroup.add(box(frameMaterial,[.18,.05,.06],[0,.17,.90]));
+    const sideL = box(frameMaterial,[.38,.045,.05],[-.81,.19,.73]); sideL.rotation.y=.18; this.glassesGroup.add(sideL);
+    const sideR = box(frameMaterial,[.38,.045,.05],[.81,.19,.73]); sideR.rotation.y=-.18; this.glassesGroup.add(sideR);
   }
 
   _buildCap() {
+    this.capGroup = new THREE.Group();
+    this.capGroup.name = 'BUILDER_CAP';
+    this.head.add(this.capGroup);
+
     const crown = enableShadows(new THREE.Mesh(
       new THREE.SphereGeometry(.79,48,28,0,Math.PI*2,0,Math.PI/2),
-      this.materials.hoodie2
+      this.materials.cap
     ));
     crown.scale.set(1.03,.72,.93);
     crown.position.set(0,.63,.02);
-    this.head.add(crown);
+    this.capGroup.add(crown);
 
-    const brim = box(this.materials.hoodie2,[.98,.08,.48],[0,.45,.64]);
+    const brim = box(this.materials.cap,[.98,.08,.48],[0,.45,.64]);
     brim.rotation.x = -.11;
-    this.head.add(brim);
+    this.capGroup.add(brim);
 
     const seam = new THREE.Mesh(new THREE.TorusGeometry(.44,.012,8,36,Math.PI), new THREE.MeshBasicMaterial({color:0x32353d}));
     seam.position.set(0,.90,.08);
     seam.rotation.x = Math.PI/2;
-    this.head.add(seam);
+    this.capGroup.add(seam);
   }
 
   _buildLogo() {
     const texture = makeLogoTexture();
     const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, toneMapped: false });
+    this.logoGroup = new THREE.Group();
+    this.logoGroup.name = 'BUILDER_LOGO';
     const plane = new THREE.Mesh(new THREE.PlaneGeometry(1.36,.92), material);
     plane.position.set(0,-.02,.708);
-    this.torso.add(plane);
+    this.logoGroup.add(plane);
+    this.hoodieGroup.add(this.logoGroup);
+  }
+
+  setPartVisible(part, visible) {
+    const show = Boolean(visible);
+    if (part === 'cap' && this.capGroup) this.capGroup.visible = show;
+    if (part === 'glasses' && this.glassesGroup) this.glassesGroup.visible = show;
+    if (part === 'logo' && this.logoGroup) this.logoGroup.visible = show;
+    if (part === 'hoodie') {
+      if (this.hoodieGroup) this.hoodieGroup.visible = show;
+      if (this.leftSleeve) this.leftSleeve.visible = show;
+      if (this.rightSleeve) this.rightSleeve.visible = show;
+    }
+  }
+
+  setPartColor(part, color) {
+    const value = new THREE.Color(color);
+    if (part === 'hoodie') {
+      this.materials.hoodie.color.copy(value);
+      this.materials.hoodie2.color.copy(value).multiplyScalar(1.18);
+    }
+    if (part === 'cap') this.materials.cap.color.copy(value);
+    if (part === 'glasses') this.materials.glasses.color.copy(value);
   }
 
   setMode(mode) {
