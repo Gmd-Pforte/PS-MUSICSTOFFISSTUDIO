@@ -3,181 +3,117 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <meta name="theme-color" content="#06070b" />
-  <title>STOFFIS STUDIO · PS BÄR</title>
+  <meta name="theme-color" content="#040713" />
+  <title>PS BÄR · STOFFIS STUDIO</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <main id="app">
-    <div id="stage" aria-label="3D-Bühne für PS BÄR"></div>
-
-    <header class="brand-panel glass">
-      <div class="eyebrow">PS AI MUSIC</div>
-      <h1>STOFFIS STUDIO</h1>
-      <p>Character 01 · PS BÄR</p>
+  <main class="studio-shell">
+    <header class="brandbar">
+      <div class="brandmark">
+        <div class="brand-title">PS BÄR</div>
+        <div class="brand-sub">STOFFIS STUDIO</div>
+      </div>
+      <div class="status-pill"><span class="live-dot"></span><span id="statusText">PS BÄR bereit</span></div>
     </header>
 
-    <section class="status-panel glass">
-      <span class="dot"></span>
-      <span id="statusText">Bereit</span>
-    </section>
+    <section class="workspace">
+      <aside class="panel sidebar" aria-label="Aussehen">
+        <button class="menu-item active" data-section="Aussehen"><span>🖌️</span><b>Aussehen</b><i>›</i></button>
+        <button class="menu-item" data-section="Kopf & Gesicht"><span>🐻</span><b>Kopf & Gesicht</b><i>›</i></button>
+        <button class="menu-item" data-section="Augen"><span>👁️</span><b>Augen</b><i>›</i></button>
+        <button class="menu-item" data-section="Mund & Emotionen"><span>😁</span><b>Mund & Emotionen</b><i>›</i></button>
+        <button class="menu-item" data-section="Cap"><span>🧢</span><b>Cap</b><i>›</i></button>
+        <button class="menu-item" data-section="Brille"><span>👓</span><b>Brille</b><i>›</i></button>
+        <button class="menu-item" data-section="Hoodie"><span>🥼</span><b>Hoodie</b><i>›</i></button>
+        <button class="menu-item" data-section="Farben"><span>🎨</span><b>Farben</b><i>›</i></button>
+        <button class="menu-item" data-section="Körper"><span>🧸</span><b>Körper</b><i>›</i></button>
+        <button class="menu-item" data-section="Arme & Beine"><span>🕺</span><b>Arme & Beine</b><i>›</i></button>
+        <button class="menu-item" data-section="Zubehör"><span>🧩</span><b>Zubehör</b><i>›</i></button>
+      </aside>
 
-    <div class="studio-tools">
-      <button id="builderToggle" class="builder-toggle glass" type="button">🧩 Bausatz</button>
-      <button id="poseToggle" class="pose-toggle glass" type="button">🦴 Pose</button>
-    </div>
-
-    <aside id="builderPanel" class="builder-panel glass" aria-label="PS BÄR Bausatz">
-      <div class="builder-head">
-        <div>
-          <div class="eyebrow">CHARACTER 01</div>
-          <h2>PS BÄR · BAUSATZ</h2>
+      <section class="stage-panel" aria-label="PS BÄR Bühne">
+        <div class="stage-glow"></div>
+        <div id="bearRig" class="bear-rig anim-idle" aria-live="polite">
+          <img id="bearSprite" src="./assets/characters/ps_baer/2d/PS_BAER_HQ.webp" alt="PS BÄR" draggable="false" />
         </div>
-        <button id="builderClose" class="icon-button" type="button">✕</button>
-      </div>
-
-      <p class="builder-copy">PS BÄR ist unser erster echter Stoffi-Bausatz. Gesicht, Cap, Brille, Hoodie und Körper lassen sich getrennt bearbeiten.</p>
-
-      <div class="builder-scroll">
-        <section class="builder-section">
-          <div class="builder-section-title"><span>😊 Gesicht</span><small id="facePresetLabel">PS Original</small></div>
-          <div class="choice-row" aria-label="Gesichtsvarianten">
-            <button class="choice active" type="button" data-face-preset="original">PS Original</button>
-            <button class="choice" type="button" data-face-preset="soft">Weicher</button>
-            <button class="choice" type="button" data-face-preset="curious">Neugierig</button>
-          </div>
-          <label class="builder-row"><span>Kopfbreite</span><input type="range" min="0.75" max="1.28" step="0.01" value="1" data-build="headWidth"><output>100%</output></label>
-          <label class="builder-row"><span>Kopfhöhe</span><input type="range" min="0.78" max="1.24" step="0.01" value="1" data-build="headHeight"><output>100%</output></label>
-          <label class="builder-row"><span>Schnauze</span><input type="range" min="0.72" max="1.28" step="0.01" value="1" data-build="muzzleSize"><output>100%</output></label>
-          <label class="builder-row"><span>Ohren</span><input type="range" min="0.72" max="1.28" step="0.01" value="1" data-build="earSize"><output>100%</output></label>
-          <label class="builder-row"><span>Augengröße</span><input type="range" min="0.72" max="1.22" step="0.01" value="1" data-build="eyeSize"><output>100%</output></label>
-          <label class="builder-row"><span>Augenabstand</span><input type="range" min="0.78" max="1.22" step="0.01" value="1" data-build="eyeSpacing"><output>100%</output></label>
-        </section>
-
-        <section class="builder-section">
-          <div class="builder-section-title"><span>🧢 Cap</span><button class="part-toggle active" type="button" data-part-toggle="cap">AN</button></div>
-          <div class="swatch-row" aria-label="Cap Farbe">
-            <button class="swatch active" type="button" data-color-target="cap" data-color="#11131a" style="--swatch:#11131a" aria-label="Schwarz"></button>
-            <button class="swatch" type="button" data-color-target="cap" data-color="#232a38" style="--swatch:#232a38" aria-label="Anthrazit"></button>
-            <button class="swatch" type="button" data-color-target="cap" data-color="#20162f" style="--swatch:#20162f" aria-label="Dunkelviolett"></button>
-          </div>
-          <label class="builder-row"><span>Größe</span><input type="range" min="0.82" max="1.18" step="0.01" value="1" data-build="capScale"><output>100%</output></label>
-          <label class="builder-row"><span>Neigung</span><input type="range" min="-0.24" max="0.24" step="0.01" value="0" data-build="capTilt" data-format="degree"><output>0°</output></label>
-        </section>
-
-        <section class="builder-section">
-          <div class="builder-section-title"><span>👓 Brille</span><button class="part-toggle active" type="button" data-part-toggle="glasses">AN</button></div>
-          <div class="swatch-row" aria-label="Brillenfarbe">
-            <button class="swatch active" type="button" data-color-target="glasses" data-color="#040405" style="--swatch:#040405" aria-label="Schwarz"></button>
-            <button class="swatch" type="button" data-color-target="glasses" data-color="#202631" style="--swatch:#202631" aria-label="Graphit"></button>
-            <button class="swatch" type="button" data-color-target="glasses" data-color="#3a214d" style="--swatch:#3a214d" aria-label="Violett"></button>
-          </div>
-          <label class="builder-row"><span>Größe</span><input type="range" min="0.82" max="1.20" step="0.01" value="1" data-build="glassesScale"><output>100%</output></label>
-          <label class="builder-row"><span>Breite</span><input type="range" min="0.86" max="1.18" step="0.01" value="1" data-build="glassesWidth"><output>100%</output></label>
-        </section>
-
-        <section class="builder-section">
-          <div class="builder-section-title"><span>🧥 Hoodie</span><button class="part-toggle active" type="button" data-part-toggle="hoodie">AN</button></div>
-          <div class="inline-toggle-row">
-            <span>PS AI MUSIC Logo</span>
-            <button class="part-toggle active" type="button" data-part-toggle="logo">AN</button>
-          </div>
-          <div class="swatch-row" aria-label="Hoodie Farbe">
-            <button class="swatch active" type="button" data-color-target="hoodie" data-color="#090a0d" style="--swatch:#090a0d" aria-label="PS Schwarz"></button>
-            <button class="swatch" type="button" data-color-target="hoodie" data-color="#161a24" style="--swatch:#161a24" aria-label="Anthrazit"></button>
-            <button class="swatch" type="button" data-color-target="hoodie" data-color="#171126" style="--swatch:#171126" aria-label="Dunkelviolett"></button>
-            <button class="swatch" type="button" data-color-target="hoodie" data-color="#0d1820" style="--swatch:#0d1820" aria-label="Dunkelblau"></button>
-          </div>
-          <label class="builder-row"><span>Sitz</span><input type="range" min="0.90" max="1.12" step="0.01" value="1" data-build="hoodieFit"><output>100%</output></label>
-        </section>
-
-        <section class="builder-section">
-          <div class="builder-section-title"><span>🧸 Körper</span><small>Grundform</small></div>
-          <label class="builder-row"><span>Körperbreite</span><input type="range" min="0.75" max="1.28" step="0.01" value="1" data-build="bodyWidth"><output>100%</output></label>
-          <label class="builder-row"><span>Körperhöhe</span><input type="range" min="0.82" max="1.20" step="0.01" value="1" data-build="bodyHeight"><output>100%</output></label>
-          <label class="builder-row"><span>Armlänge</span><input type="range" min="0.75" max="1.25" step="0.01" value="1" data-build="armLength"><output>100%</output></label>
-          <label class="builder-row"><span>Beinlänge</span><input type="range" min="0.75" max="1.25" step="0.01" value="1" data-build="legLength"><output>100%</output></label>
-          <label class="builder-row"><span>Pfoten</span><input type="range" min="0.78" max="1.25" step="0.01" value="1" data-build="pawSize"><output>100%</output></label>
-        </section>
-      </div>
-
-      <div class="builder-actions">
-        <button id="builderSave" class="secondary" type="button">💾 Stoffi speichern</button>
-        <button id="builderReset" class="secondary" type="button">↺ PS BÄR Original</button>
-      </div>
-    </aside>
-
-    <aside id="posePanel" class="pose-panel glass" aria-label="PS BÄR Pose Studio">
-      <div class="builder-head">
-        <div>
-          <div class="eyebrow">STOFFIS MOTION</div>
-          <h2>PS BÄR · POSE</h2>
-        </div>
-        <button id="poseClose" class="icon-button" type="button">✕</button>
-      </div>
-
-      <div class="pose-tip">👆 Tippe einen Körperteil am Bären an und ziehe ihn mit dem Finger. Links/rechts dreht, hoch/runter hebt oder senkt. Feineinstellung geht über die Regler.</div>
-
-      <div class="pose-part-grid" aria-label="Körperteil wählen">
-        <button class="pose-part active" type="button" data-pose-part="head">🙂<span>Kopf</span></button>
-        <button class="pose-part" type="button" data-pose-part="torso">🧸<span>Körper</span></button>
-        <button class="pose-part" type="button" data-pose-part="leftArm">💪<span>Arm L</span></button>
-        <button class="pose-part" type="button" data-pose-part="rightArm">💪<span>Arm R</span></button>
-        <button class="pose-part" type="button" data-pose-part="leftLeg">🦵<span>Bein L</span></button>
-        <button class="pose-part" type="button" data-pose-part="rightLeg">🦵<span>Bein R</span></button>
-      </div>
-
-      <section class="builder-section pose-section">
-        <div class="builder-section-title"><span>🦴 Ausgewählt</span><small id="poseSelectedLabel">Kopf</small></div>
-        <label class="builder-row"><span>Vor / zurück</span><input type="range" min="-160" max="160" step="1" value="0" data-pose-axis="x"><output>0°</output></label>
-        <label class="builder-row"><span>Links / rechts</span><input type="range" min="-160" max="160" step="1" value="0" data-pose-axis="y"><output>0°</output></label>
-        <label class="builder-row"><span>Seitlich</span><input type="range" min="-160" max="160" step="1" value="0" data-pose-axis="z"><output>0°</output></label>
+        <div class="stage-caption"><b id="activeSection">Aussehen</b><span>HQ 2D Character · Original-Stil</span></div>
       </section>
 
-      <div class="pose-actions">
-        <button id="poseSave" class="secondary" type="button">💾 Pose speichern</button>
-        <button id="poseResetSelected" class="secondary" type="button">↺ Teil zurück</button>
-        <button id="poseResetAll" class="secondary" type="button">↺ Ganze Pose</button>
-        <button id="poseDone" class="secondary primary-action" type="button">✓ Fertig</button>
-      </div>
-    </aside>
+      <aside class="right-stack">
+        <section class="panel card expressions">
+          <div class="panel-title"><span>✚</span><b>Gesichtsausdrücke</b></div>
+          <div class="tile-grid">
+            <button class="face-tile active" data-expression="normal"><span>🙂</span><b>Normal</b></button>
+            <button class="face-tile" data-expression="happy"><span>😄</span><b>Fröhlich</b></button>
+            <button class="face-tile" data-expression="sad"><span>😢</span><b>Traurig</b></button>
+            <button class="face-tile" data-expression="surprised"><span>😮</span><b>Überrascht</b></button>
+            <button class="face-tile" data-expression="angry"><span>😠</span><b>Wütend</b></button>
+            <button class="face-tile" data-expression="wink"><span>😉</span><b>Zwinkern</b></button>
+            <button class="face-tile" data-expression="smile"><span>😊</span><b>Lächeln</b></button>
+            <button class="face-tile" data-expression="think"><span>🤔</span><b>Denken</b></button>
+          </div>
+        </section>
 
-    <section class="control-panel glass" aria-label="Avatar Steuerung">
-      <div class="control-group">
-        <button class="control active" data-action="idle">🧸 <span>Idle</span></button>
-        <button class="control" data-action="wave">👋 <span>Winken</span></button>
-        <button class="control" data-action="walk">🚶 <span>Laufen</span></button>
-        <button class="control" data-action="look">👀 <span>Umschauen</span></button>
-        <button class="control" data-action="happy">😊 <span>Freude</span></button>
-        <button class="control" data-action="sad">🥺 <span>Traurig</span></button>
-      </div>
+        <section class="panel card animations">
+          <div class="panel-title"><span>▶</span><b>Animationen</b></div>
+          <div class="tile-grid anim-grid">
+            <button class="anim-tile active" data-animation="idle"><span>🧸</span><b>Idle</b></button>
+            <button class="anim-tile" data-animation="wave"><span>👋</span><b>Winken</b></button>
+            <button class="anim-tile" data-animation="walk"><span>🚶</span><b>Laufen</b></button>
+            <button class="anim-tile" data-animation="dance"><span>🕺</span><b>Tanzen</b></button>
+            <button class="anim-tile" data-animation="sit"><span>🪑</span><b>Sitzen</b></button>
+            <button class="anim-tile" data-animation="talk"><span>🗣️</span><b>Sprechen</b></button>
+          </div>
+        </section>
 
-      <div class="audio-row">
-        <label class="upload-button" for="voiceFile">🎙️ Sprachclip laden</label>
-        <input id="voiceFile" type="file" accept="audio/*" />
-        <button id="playVoice" class="secondary" disabled>▶ Abspielen</button>
-        <button id="stopVoice" class="secondary" disabled>■ Stop</button>
-      </div>
-
-      <div class="audio-meter" aria-label="Sprachaktivität">
-        <div id="meterFill"></div>
-      </div>
-      <p class="hint">Bausatz = Stoffi formen · Pose = Körper direkt bewegen · Audio = automatischer Mund-Sync.</p>
+        <section class="panel card voice-card">
+          <div class="panel-title"><span>🎙️</span><b>Stimme & Sprache</b></div>
+          <div class="wavebar"><div id="meterFill"></div></div>
+          <div class="time-row"><span id="voiceName">Kein Sprachclip</span><span id="voiceTime">0:00 / 0:00</span></div>
+          <label class="primary upload-label" for="voiceFile">📁 Sprachclip laden</label>
+          <input id="voiceFile" type="file" accept="audio/*" />
+          <div class="voice-actions"><button id="playVoice" disabled>▶ Abspielen</button><button id="stopVoice" disabled>■ Stop</button></div>
+        </section>
+      </aside>
     </section>
 
-    <div class="camera-help glass">Ziehen = drehen · Pinch = Zoom · Pose-Modus: Körperteil antippen & ziehen</div>
+    <section class="bottom-grid">
+      <section class="panel card pose-card">
+        <div class="panel-title"><span>📌</span><b>Pose & Bewegung</b></div>
+        <div class="pose-content">
+          <div class="dpad">
+            <button data-nudge="up">▲</button><button data-nudge="left">◀</button><button data-nudge="right">▶</button><button data-nudge="down">▼</button>
+          </div>
+          <div class="pose-chips">
+            <button class="pose-chip active" data-pose="head"><span>🐻</span><b>Kopf</b></button>
+            <button class="pose-chip" data-pose="leftArm"><span>👈</span><b>Links Arm</b></button>
+            <button class="pose-chip" data-pose="rightArm"><span>👉</span><b>Rechts Arm</b></button>
+            <button class="pose-chip" data-pose="leftLeg"><span>🦶</span><b>Links Bein</b></button>
+            <button class="pose-chip" data-pose="rightLeg"><span>🦶</span><b>Rechts Bein</b></button>
+            <button class="pose-chip" data-pose="body"><span>🧥</span><b>Körper</b></button>
+          </div>
+        </div>
+      </section>
 
-    <audio id="voiceAudio" preload="auto"></audio>
+      <section class="panel card size-card">
+        <div class="panel-title"><span>✚</span><b>Größe & Position</b></div>
+        <label><span>Größe</span><input id="sizeRange" type="range" min="72" max="128" value="100"><output id="sizeOut">100%</output></label>
+        <label><span>Höhe</span><input id="yRange" type="range" min="-18" max="18" value="0"><output id="yOut">0%</output></label>
+        <label><span>Breite</span><input id="xRange" type="range" min="-18" max="18" value="0"><output id="xOut">0%</output></label>
+        <label><span>Tiefe</span><input id="depthRange" type="range" min="-12" max="12" value="0"><output id="depthOut">0%</output></label>
+      </section>
+
+      <section class="panel card save-card">
+        <div class="panel-title"><span>💾</span><b>Speichern & Laden</b></div>
+        <button id="saveBear" class="primary">💾 Aktuellen Bär speichern</button>
+        <button id="loadBear">↻ PS BÄR laden</button>
+        <button id="resetBear" class="danger">🗑 Zurücksetzen</button>
+      </section>
+    </section>
+
+    <audio id="voiceAudio" preload="metadata"></audio>
   </main>
-
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-    }
-  }
-  </script>
   <script type="module" src="./src/main.js"></script>
 </body>
 </html>
