@@ -13,10 +13,16 @@
       <div>
         <p class="eyebrow">PS AI MUSIC</p>
         <h1>Song Prompter V6</h1>
-        <p class="subtitle">Modulare Suno-v6-Prompts aus kombinierbaren Bausteinen.</p>
+        <p class="subtitle">Modularer Suno-v6-Baukasten für Genres, Stimmen, Instrumente, Songaufbau und Produktion.</p>
+        <p id="catalogStats" class="catalog-stats"></p>
       </div>
-      <button id="randomizeBtn" class="btn ghost">🎲 Variation</button>
+      <div class="top-actions">
+        <button id="randomizeBtn" class="btn ghost">🎲 Smart Variation</button>
+        <button id="resetBtn" class="btn ghost">↺ Reset</button>
+      </div>
     </header>
+
+    <section id="utilityControls" class="utility-grid"></section>
 
     <section class="workspace">
       <div class="builder" id="builder"></div>
@@ -36,15 +42,17 @@
 
         <div class="actions">
           <button id="copyBtn" class="btn primary">📋 Kopieren</button>
-          <button id="optimizeBtn" class="btn">✨ Optimieren</button>
+          <button id="optimizeBtn" class="btn">✨ V6 optimieren</button>
           <button id="savePresetBtn" class="btn">💾 Preset speichern</button>
         </div>
 
         <div class="preset-row">
-          <label for="presetSelect">Preset</label>
+          <label for="presetSelect">Master-Preset</label>
           <select id="presetSelect"></select>
           <button id="loadPresetBtn" class="btn small">Laden</button>
         </div>
+
+        <p class="preview-note">Der Optimierer schützt wichtige Stil-, Stimm- und Wunschangaben und entfernt bei Bedarf zuerst niedrig priorisierte Details.</p>
       </aside>
     </section>
   </main>
