@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0d14">
+  <title>PS AI MUSIC – Song Prompter V6</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PS AI MUSIC</p>
+        <h1>Song Prompter V6</h1>
+        <p class="subtitle">Modulare Suno-v6-Prompts aus kombinierbaren Bausteinen.</p>
+      </div>
+      <button id="randomizeBtn" class="btn ghost">🎲 Variation</button>
+    </header>
+
+    <section class="workspace">
+      <div class="builder" id="builder"></div>
+
+      <aside class="preview-card">
+        <div class="preview-head">
+          <div>
+            <span class="label">Live Prompt</span>
+            <strong id="counter">0 / 1000</strong>
+          </div>
+          <span id="statusBadge" class="badge ok">V6 OK</span>
+        </div>
+
+        <textarea id="promptOutput" spellcheck="false" aria-label="Fertiger Suno Prompt"></textarea>
+
+        <div id="warnings" class="warnings" aria-live="polite"></div>
+
+        <div class="actions">
+          <button id="copyBtn" class="btn primary">📋 Kopieren</button>
+          <button id="optimizeBtn" class="btn">✨ Optimieren</button>
+          <button id="savePresetBtn" class="btn">💾 Preset speichern</button>
+        </div>
+
+        <div class="preset-row">
+          <label for="presetSelect">Preset</label>
+          <select id="presetSelect"></select>
+          <button id="loadPresetBtn" class="btn small">Laden</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
