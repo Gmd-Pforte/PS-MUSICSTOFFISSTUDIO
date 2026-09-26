@@ -8,6 +8,7 @@ on:
       - 'styles.css'
       - 'character-01.json'
       - 'src/**'
+      - 'assets/**'
       - 'android-app/**'
       - '.github/workflows/build-apk.yml'
   pull_request:
@@ -16,6 +17,7 @@ on:
       - 'styles.css'
       - 'character-01.json'
       - 'src/**'
+      - 'assets/**'
       - 'android-app/**'
       - '.github/workflows/build-apk.yml'
 
@@ -54,12 +56,12 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp android-app/app/build/outputs/apk/debug/app-debug.apk PS-MUSIC-STOFFIS-STUDIO-v0.1.apk
+          cp android-app/app/build/outputs/apk/debug/app-debug.apk PS-MUSIC-STOFFIS-STUDIO-v0.3.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PS-MUSIC-STOFFIS-STUDIO-APK
-          path: PS-MUSIC-STOFFIS-STUDIO-v0.1.apk
+          path: PS-MUSIC-STOFFIS-STUDIO-v0.3.apk
           if-no-files-found: error
           retention-days: 30
