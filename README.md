@@ -1,33 +1,68 @@
 # PS MUSIC STOFFIS STUDIO
 
-Browserbasiertes 3D-Studio für die **Stoffis-Serie** von PS AI MUSIC.
+3D-Studio für die **Stoffis-Serie von PS AI MUSIC**.
 
 ## Character 01 – PS BÄR
 
-Der erste Charakter ist ein stilisierter 3D-Stoffbär mit Cap, Brille und PS-AI-MUSIC-Hoodie. Die erste Studio-Version enthält:
+PS BÄR wird ab jetzt als echtes Produktions-Asset aufgebaut. Die alte prozedurale Kugel-/Box-Figur bleibt nur als technischer Fallback, solange das finale GLB noch nicht im Projekt liegt.
 
-- echte 3D-Geometrie im Browser
-- Kamera drehen und zoomen
-- Idle-Animation mit Atmung und Blinzeln
-- Winken, Laufen und Umschauen
-- einfache Gesichtsausdrücke
-- Audio-Upload für Sprachclips
-- automatische Mundbewegung anhand des Audiosignals als erster Lip-Sync-Prototyp
-- saubere Struktur für weitere Stoffis
+### Produktionsmodell
 
-## Start
+Zieldatei:
 
-Einfach `index.html` über einen kleinen lokalen Webserver oder später über GitHub Pages öffnen.
+`assets/characters/ps_baer/model/PS_BAER_MASTER.glb`
 
-Die 3D-Engine wird über ein CDN geladen, daher ist beim Start eine Internetverbindung erforderlich.
+Sobald diese Datei vorhanden ist, lädt Stoffis Studio automatisch das echte GLB-Modell. Das Android-Projekt packt den kompletten `assets/`-Ordner in die APK.
 
-## Nächste Schritte
+### Asset-Struktur
 
-1. PS BÄR als hochwertiges riggbares GLB-Modell ersetzen.
-2. Viseme/Morph-Targets für echten Phonem-Lip-Sync ergänzen.
-3. Szenen-, Kamera- und Dialogsystem ausbauen.
-4. Weitere Stoffis als eigene Charakter-Module hinzufügen.
+```text
+assets/characters/ps_baer/
+├── MODEL_CONTRACT.md
+├── config/
+│   └── ps_baer.json
+├── model/
+│   └── PS_BAER_MASTER.glb
+├── reference/
+│   ├── front.jpg
+│   ├── side.jpg
+│   ├── back.jpg
+│   └── three_quarter.jpg
+└── textures/
+```
+
+### High-End-Ziel
+
+- stilisierter hochwertiger Plush-Look
+- Master-Proportionen nach der freigegebenen PS-BÄR-Vorlage
+- schwarze Cap, rechteckige Brille, schwarzer Hoodie
+- PS AI MUSIC Logo als sauberes Hoodie-Material
+- PBR-Materialien und mobile Echtzeit-Performance
+- Rig für Kopf, Ohren, Augen, Arme, Pfoten, Beine und Kiefer
+- Morph Targets für Blinzeln, Emotionen und Visemes
+- ElevenLabs-/Audio-Clips als spätere Quelle für Lippen-/Schnauzen-Sync
+
+## Studio-Funktionen
+
+- 3D-Kamera drehen und zoomen
+- Audio-Datei vom Handy laden
+- Audio-Mund-Sync als Fallback
+- vorbereitet für echte Visemes im Master-GLB
+- Animation Controller für Idle, Walk, Run, Wave, Look, Sit, Happy, Sad und weitere Clips
+- Android-APK-Build über GitHub Actions
+
+## Android
+
+Der aktuelle Build nutzt Hardwarebeschleunigung über WebGL im Android WebView. GPU/CPU/RAM benötigen keine zusätzlichen Android-Berechtigungen. Sprachclips werden über den Android-Dateiauswahldialog geladen.
+
+## Qualitätsprüfung
+
+`scripts/validate_ps_baer_glb.py` prüft ein eingespieltes GLB auf glTF-2.0-Struktur und meldet fehlende bevorzugte Rig-Nodes, Animationen und Gesichtsmorphs. Der Workflow `Validate PS BÄR Master GLB` startet automatisch, sobald das Mastermodell geändert wird.
+
+## Nächster Meilenstein
+
+Das echte `PS_BAER_MASTER.glb` aus den freigegebenen Front-/Side-/Back-/3/4-Referenzen erstellen und anschließend direkt in der Android-App testen.
 
 ---
 
-PS AI MUSIC · STOFFIS STUDIO
+**PS AI MUSIC · STOFFIS STUDIO**
