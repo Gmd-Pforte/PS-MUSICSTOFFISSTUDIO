@@ -1,0 +1,24 @@
+name: Validate PS BÄR Master GLB
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'assets/characters/ps_baer/model/PS_BAER_MASTER.glb'
+      - 'assets/characters/ps_baer/config/ps_baer.json'
+      - 'scripts/validate_ps_baer_glb.py'
+  pull_request:
+    paths:
+      - 'assets/characters/ps_baer/model/PS_BAER_MASTER.glb'
+      - 'assets/characters/ps_baer/config/ps_baer.json'
+      - 'scripts/validate_ps_baer_glb.py'
+
+jobs:
+  validate:
+    if: ${{ hashFiles('assets/characters/ps_baer/model/PS_BAER_MASTER.glb') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate GLB contract
+        run: python3 scripts/validate_ps_baer_glb.py
