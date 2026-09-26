@@ -22,7 +22,10 @@
       <span id="statusText">Bereit</span>
     </section>
 
-    <button id="builderToggle" class="builder-toggle glass" type="button">🧩 Bausatz</button>
+    <div class="studio-tools">
+      <button id="builderToggle" class="builder-toggle glass" type="button">🧩 Bausatz</button>
+      <button id="poseToggle" class="pose-toggle glass" type="button">🦴 Pose</button>
+    </div>
 
     <aside id="builderPanel" class="builder-panel glass" aria-label="PS BÄR Bausatz">
       <div class="builder-head">
@@ -33,7 +36,7 @@
         <button id="builderClose" class="icon-button" type="button">✕</button>
       </div>
 
-      <p class="builder-copy">PS BÄR ist jetzt unser erster echter Stoffi-Bausatz. Gesicht, Cap, Brille, Hoodie und Körper lassen sich getrennt bearbeiten.</p>
+      <p class="builder-copy">PS BÄR ist unser erster echter Stoffi-Bausatz. Gesicht, Cap, Brille, Hoodie und Körper lassen sich getrennt bearbeiten.</p>
 
       <div class="builder-scroll">
         <section class="builder-section">
@@ -104,6 +107,41 @@
       </div>
     </aside>
 
+    <aside id="posePanel" class="pose-panel glass" aria-label="PS BÄR Pose Studio">
+      <div class="builder-head">
+        <div>
+          <div class="eyebrow">STOFFIS MOTION</div>
+          <h2>PS BÄR · POSE</h2>
+        </div>
+        <button id="poseClose" class="icon-button" type="button">✕</button>
+      </div>
+
+      <div class="pose-tip">👆 Tippe einen Körperteil am Bären an und ziehe ihn mit dem Finger. Links/rechts dreht, hoch/runter hebt oder senkt. Feineinstellung geht über die Regler.</div>
+
+      <div class="pose-part-grid" aria-label="Körperteil wählen">
+        <button class="pose-part active" type="button" data-pose-part="head">🙂<span>Kopf</span></button>
+        <button class="pose-part" type="button" data-pose-part="torso">🧸<span>Körper</span></button>
+        <button class="pose-part" type="button" data-pose-part="leftArm">💪<span>Arm L</span></button>
+        <button class="pose-part" type="button" data-pose-part="rightArm">💪<span>Arm R</span></button>
+        <button class="pose-part" type="button" data-pose-part="leftLeg">🦵<span>Bein L</span></button>
+        <button class="pose-part" type="button" data-pose-part="rightLeg">🦵<span>Bein R</span></button>
+      </div>
+
+      <section class="builder-section pose-section">
+        <div class="builder-section-title"><span>🦴 Ausgewählt</span><small id="poseSelectedLabel">Kopf</small></div>
+        <label class="builder-row"><span>Vor / zurück</span><input type="range" min="-160" max="160" step="1" value="0" data-pose-axis="x"><output>0°</output></label>
+        <label class="builder-row"><span>Links / rechts</span><input type="range" min="-160" max="160" step="1" value="0" data-pose-axis="y"><output>0°</output></label>
+        <label class="builder-row"><span>Seitlich</span><input type="range" min="-160" max="160" step="1" value="0" data-pose-axis="z"><output>0°</output></label>
+      </section>
+
+      <div class="pose-actions">
+        <button id="poseSave" class="secondary" type="button">💾 Pose speichern</button>
+        <button id="poseResetSelected" class="secondary" type="button">↺ Teil zurück</button>
+        <button id="poseResetAll" class="secondary" type="button">↺ Ganze Pose</button>
+        <button id="poseDone" class="secondary primary-action" type="button">✓ Fertig</button>
+      </div>
+    </aside>
+
     <section class="control-panel glass" aria-label="Avatar Steuerung">
       <div class="control-group">
         <button class="control active" data-action="idle">🧸 <span>Idle</span></button>
@@ -124,10 +162,10 @@
       <div class="audio-meter" aria-label="Sprachaktivität">
         <div id="meterFill"></div>
       </div>
-      <p class="hint">Bausatz = PS BÄR direkt formen und Bauteile wählen · Audio = erster automatischer Mund-Sync.</p>
+      <p class="hint">Bausatz = Stoffi formen · Pose = Körper direkt bewegen · Audio = automatischer Mund-Sync.</p>
     </section>
 
-    <div class="camera-help glass">Ziehen = drehen · Mausrad / Pinch = Zoom</div>
+    <div class="camera-help glass">Ziehen = drehen · Pinch = Zoom · Pose-Modus: Körperteil antippen & ziehen</div>
 
     <audio id="voiceAudio" preload="auto"></audio>
   </main>
