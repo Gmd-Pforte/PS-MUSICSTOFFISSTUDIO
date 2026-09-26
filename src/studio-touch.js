@@ -1,57 +1,23 @@
-const $=(s)=>document.querySelector(s);const $$=(s)=>[...document.querySelectorAll(s)];
-const stage=$('#stagePanel'),rig=$('#bearRig'),sheet=$('#studioSheet'),activeSection=$('#activeSection'),status=$('#statusText');
-const STORAGE='stoffis.studio.touch.v07';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const stage=$('#stagePanel'),rig=$('#bearRig'),sheet=$('#studioSheet'),active=$('#activeSection'),status=$('#statusText');
+const STORAGE='stoffis.studio.touch.v08';
 const state={mode:'move',sheet:'none',x:0,y:0,scale:1,selected:'body',parts:{head:{x:0,y:0,r:0},body:{x:0,y:0,r:0},leftArm:{x:0,y:0,r:0},rightArm:{x:0,y:0,r:0},leftLeg:{x:0,y:0,r:0},rightLeg:{x:0,y:0,r:0}}};
-const layerIds={head:'headLayer',body:'bodyLayer',leftArm:'leftArmLayer',rightArm:'rightArmLayer',leftLeg:'leftLegLayer',rightLeg:'rightLegLayer'};
-const labels={head:'Kopf',body:'Gesamte Figur',leftArm:'Linker Arm',rightArm:'Rechter Arm',leftLeg:'Linkes Bein',rightLeg:'Rechtes Bein'};
+const ids={head:'headLayer',body:'bodyLayer',leftArm:'leftArmLayer',rightArm:'rightArmLayer',leftLeg:'leftLegLayer',rightLeg:'rightLegLayer'},labels={head:'Kopf',body:'Körper',leftArm:'Linker Arm',rightArm:'Rechter Arm',leftLeg:'Linkes Bein',rightLeg:'Rechtes Bein'};
 const pointers=new Map();let drag=null,pinch=null,lastTap=0;
-function setStatus(t){if(status)status.textContent=t}
-function applyView(){rig.style.translate=`${state.x}px ${state.y}px`;rig.style.scale=String(state.scale)}
-function layerFor(name){return document.getElementById(layerIds[name]||'')}
-function applyPart(name){const el=layerFor(name);if(!el)return;const p=state.parts[name];el.style.setProperty('--pose-x',`${p.x}px`);el.style.setProperty('--pose-y',`${p.y}px`);el.style.setProperty('--pose-r',`${p.r}deg`)}
-function applyAll(){applyView();Object.keys(state.parts).forEach(applyPart);syncSelection()}
-function syncSelection(){
-  $$('.pose-chip').forEach(b=>b.classList.toggle('active',b.dataset.pose===state.selected));
-  if(activeSection)activeSection.textContent=labels[state.selected]||'Figur';
-}
-function setSelected(name){if(!state.parts[name])return;state.selected=name;syncSelection();const btn=document.querySelector(`.pose-chip[data-pose="${name}"]`);if(btn&&!btn.classList.contains('active'))btn.click();setStatus(`Ausgewählt · ${labels[name]}`)}
-function setMode(mode){state.mode=mode;$$('[data-touch-mode]').forEach(b=>b.classList.toggle('active',b.dataset.touchMode===mode));setStatus(mode==='pose'?'Pose · Teil direkt anfassen':mode==='zoom'?'Zoom · ziehen oder zwei Finger':'Bühne · Figur bewegen')}
-function openSheet(name){
- state.sheet=name;sheet.classList.toggle('open',name!=='none');$$('.sheet-page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));$$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.sheet===name||(name==='none'&&b.dataset.sheet==='none')));
-}
-$$('[data-sheet]').forEach(b=>b.addEventListener('click',()=>{const n=b.dataset.sheet;openSheet(state.sheet===n&&n!=='none'?'none':n)}));
-$$('.sheet-close').forEach(b=>b.addEventListener('click',()=>openSheet('none')));$('#projectButton')?.addEventListener('click',()=>openSheet(state.sheet==='project'?'none':'project'));
-$$('[data-touch-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.touchMode)));
-$$('.pose-chip').forEach(b=>b.addEventListener('click',()=>setSelected(b.dataset.pose)));
-function localPoint(ev){const r=rig.getBoundingClientRect();return{x:(ev.clientX-r.left)/r.width*525,y:(ev.clientY-r.top)/r.height*785}}
-function hitTest(ev){
- const order=['head','rightArm','leftArm','body','rightLeg','leftLeg'];const pt=localPoint(ev);
- for(const name of order){const el=layerFor(name);const c=el?.querySelector('canvas');if(!c)continue;try{const x=Math.max(0,Math.min(c.width-1,Math.round(pt.x/c.clientWidth*c.width)));const y=Math.max(0,Math.min(c.height-1,Math.round(pt.y/c.clientHeight*c.height)));if(c.getContext('2d').getImageData(x,y,1,1).data[3]>18)return name}catch{}}
- return state.selected;
-}
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-stage.addEventListener('pointerdown',ev=>{
- if(ev.target.closest('button,.studio-sheet,.bottom-nav,.topbar'))return;stage.setPointerCapture?.(ev.pointerId);pointers.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
- const now=Date.now();if(now-lastTap<280){state.x=0;state.y=0;state.scale=1;applyView();setStatus('Ansicht zentriert');lastTap=0;return}lastTap=now;
- if(pointers.size===2){const [a,b]=[...pointers.values()];pinch={d:dist(a,b),scale:state.scale};drag=null;return}
- if(state.mode==='pose'){setSelected(hitTest(ev))}
- drag={id:ev.pointerId,x:ev.clientX,y:ev.clientY,startX:state.x,startY:state.y,part:{...state.parts[state.selected]}};
-});
-stage.addEventListener('pointermove',ev=>{
- if(!pointers.has(ev.pointerId))return;pointers.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
- if(pointers.size>=2){const [a,b]=[...pointers.values()];if(!pinch)pinch={d:dist(a,b),scale:state.scale};state.scale=Math.max(.55,Math.min(1.75,pinch.scale*(dist(a,b)/Math.max(1,pinch.d))));applyView();return}
- if(!drag||drag.id!==ev.pointerId)return;const dx=ev.clientX-drag.x,dy=ev.clientY-drag.y;
- if(state.mode==='move'){state.x=drag.startX+dx;state.y=drag.startY+dy;applyView()}
- else if(state.mode==='zoom'){state.scale=Math.max(.55,Math.min(1.75,pinch?.scale||state.scale-dy*.003));applyView()}
- else if(state.mode==='pose'){
-   const p=state.parts[state.selected];p.x=drag.part.x+dx*.72;p.y=drag.part.y+dy*.72;
-   if(state.selected!=='body')p.r=Math.max(-55,Math.min(55,drag.part.r+dx*.18));else p.r=Math.max(-15,Math.min(15,drag.part.r+dx*.06));applyPart(state.selected)
- }
-});
-function endPointer(ev){pointers.delete(ev.pointerId);if(drag?.id===ev.pointerId)drag=null;if(pointers.size<2)pinch=null}
-stage.addEventListener('pointerup',endPointer);stage.addEventListener('pointercancel',endPointer);
-$('#saveBear')?.addEventListener('click',()=>{localStorage.setItem(STORAGE,JSON.stringify(state));setStatus('Studio-Stand gespeichert 💾')});
-$('#loadBear')?.addEventListener('click',()=>{try{const s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(s){Object.assign(state,s);state.parts={...state.parts,...s.parts};applyAll();setStatus('Studio-Stand geladen')}}catch{}});
-$('#resetBear')?.addEventListener('click',()=>{state.x=0;state.y=0;state.scale=1;state.selected='body';Object.keys(state.parts).forEach(k=>state.parts[k]={x:0,y:0,r:0});localStorage.removeItem(STORAGE);applyAll();setStatus('Studio zurückgesetzt')});
-try{const saved=JSON.parse(localStorage.getItem(STORAGE)||'null');if(saved){Object.assign(state,saved);state.parts={...state.parts,...saved.parts}}}catch{}
-setMode('move');openSheet('none');setTimeout(applyAll,120);
+function st(t){if(status)status.textContent=t}function layer(n){return document.getElementById(ids[n]||'')}
+function view(){rig.style.translate=`${state.x}px ${state.y}px`;rig.style.scale=String(state.scale);const sr=$('#sizeRange'),xr=$('#xRange'),yr=$('#yRange'),so=$('#sizeOut'),xo=$('#xOut'),yo=$('#yOut');if(sr)sr.value=Math.round(state.scale*100);if(xr)xr.value=Math.max(-40,Math.min(40,Math.round(state.x/3)));if(yr)yr.value=Math.max(-40,Math.min(40,Math.round(-state.y/3)));if(so)so.textContent=Math.round(state.scale*100)+'%';if(xo)xo.textContent=Math.round(state.x)+'px';if(yo)yo.textContent=Math.round(state.y)+'px'}
+function part(n){const e=layer(n);if(!e)return;const p=state.parts[n];e.style.setProperty('--pose-x',p.x+'px');e.style.setProperty('--pose-y',p.y+'px');e.style.setProperty('--pose-r',p.r+'deg')}
+function sync(){ $$('.pose-chip').forEach(b=>b.classList.toggle('active',b.dataset.pose===state.selected));if(active)active.textContent=labels[state.selected]||'Figur';window.StoffisPuppet?.selectPart?.(state.selected)}
+function all(){view();Object.keys(state.parts).forEach(part);sync()}function select(n){if(!state.parts[n])return;state.selected=n;sync();st('Ausgewählt · '+labels[n])}
+function mode(m){state.mode=m;$$('[data-touch-mode]').forEach(b=>b.classList.toggle('active',b.dataset.touchMode===m));stage.classList.toggle('mode-pose',m==='pose');st(m==='pose'?'Pose · Körperteil antippen und ziehen':m==='zoom'?'Zoom · zwei Finger oder ziehen':'Bühne · Figur mit Finger bewegen');sync()}
+function open(n){state.sheet=n;sheet.classList.toggle('open',n!=='none');$$('.sheet-page').forEach(p=>p.classList.toggle('active',p.dataset.page===n));$$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.sheet===n||(n==='none'&&b.dataset.sheet==='none')))}
+$$('[data-sheet]').forEach(b=>b.addEventListener('click',()=>{const n=b.dataset.sheet;open(state.sheet===n&&n!=='none'?'none':n)}));$$('.sheet-close').forEach(b=>b.addEventListener('click',()=>open('none')));$('#projectButton')?.addEventListener('click',()=>open(state.sheet==='project'?'none':'project'));$$('[data-touch-mode]').forEach(b=>b.addEventListener('click',()=>mode(b.dataset.touchMode)));$$('.pose-chip').forEach(b=>b.addEventListener('click',()=>select(b.dataset.pose)));
+function local(ev){const r=rig.getBoundingClientRect();return{x:(ev.clientX-r.left)/Math.max(1,r.width)*531,y:(ev.clientY-r.top)/Math.max(1,r.height)*740}}
+function hit(ev){const order=['head','rightArm','leftArm','body','rightLeg','leftLeg'],p=local(ev);for(const n of order){const c=layer(n)?.querySelector('canvas');if(!c)continue;try{const x=Math.max(0,Math.min(c.width-1,Math.round(p.x))),y=Math.max(0,Math.min(c.height-1,Math.round(p.y)));if(c.getContext('2d').getImageData(x,y,1,1).data[3]>18)return n}catch{}}return state.selected}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}stage.style.touchAction='none';
+stage.addEventListener('pointerdown',e=>{if(e.target.closest('button,.studio-sheet,.bottom-nav,.topbar'))return;stage.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});const now=Date.now();if(now-lastTap<280){state.x=0;state.y=0;state.scale=1;view();st('Ansicht zentriert');lastTap=0;return}lastTap=now;if(pointers.size===2){const[a,b]=[...pointers.values()];pinch={d:dist(a,b),scale:state.scale};drag=null;return}if(state.mode==='pose')select(hit(e));drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:state.x,startY:state.y,startScale:state.scale,p:{...state.parts[state.selected]}}});
+stage.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size>=2){const[a,b]=[...pointers.values()];if(!pinch)pinch={d:dist(a,b),scale:state.scale};state.scale=Math.max(.55,Math.min(1.85,pinch.scale*dist(a,b)/Math.max(1,pinch.d)));view();return}if(!drag||drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(state.mode==='move'){state.x=drag.startX+dx;state.y=drag.startY+dy;view()}else if(state.mode==='zoom'){state.scale=Math.max(.55,Math.min(1.85,drag.startScale-dy*.0035));view()}else{const p=state.parts[state.selected];p.x=drag.p.x+dx*.72;p.y=drag.p.y+dy*.72;const lim=state.selected==='body'?14:state.selected==='head'?24:65;p.r=Math.max(-lim,Math.min(lim,drag.p.r+dx*.18));part(state.selected)}});
+function end(e){pointers.delete(e.pointerId);if(drag?.id===e.pointerId)drag=null;if(pointers.size<2)pinch=null}stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
+$('#sizeRange')?.addEventListener('input',e=>{state.scale=Number(e.target.value)/100;view()});$('#xRange')?.addEventListener('input',e=>{state.x=Number(e.target.value)*3;view()});$('#yRange')?.addEventListener('input',e=>{state.y=-Number(e.target.value)*3;view()});
+$('#saveBear')?.addEventListener('click',()=>{localStorage.setItem(STORAGE,JSON.stringify(state));st('Studio-Stand gespeichert 💾')});$('#loadBear')?.addEventListener('click',()=>{try{const s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(s){Object.assign(state,s);state.parts={...state.parts,...s.parts};all();st('Studio-Stand geladen')}}catch{st('Speicherstand konnte nicht geladen werden')}});$('#resetBear')?.addEventListener('click',()=>{state.x=0;state.y=0;state.scale=1;state.selected='body';Object.keys(state.parts).forEach(k=>state.parts[k]={x:0,y:0,r:0});localStorage.removeItem(STORAGE);all();st('Studio zurückgesetzt')});
+try{const s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(s){Object.assign(state,s);state.parts={...state.parts,...s.parts}}}catch{}mode('move');open('none');setTimeout(all,220);
