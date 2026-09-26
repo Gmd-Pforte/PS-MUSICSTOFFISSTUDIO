@@ -30,7 +30,7 @@ android {
 
 def syncSite = tasks.register('syncSite', Copy) {
     from(rootProject.projectDir) {
-        include 'index.html', 'styles.css', 'data.js', 'app.js'
+        include 'index.html', 'styles.css', 'data.js', 'mega-data.js', 'app.js'
     }
     into "$buildDir/generated/assets/site"
 }
