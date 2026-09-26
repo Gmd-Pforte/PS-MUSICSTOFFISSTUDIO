@@ -50,11 +50,11 @@ jobs:
           gradle -p android-app :app:assembleDebug --stacktrace
       - name: Rename APK
         run: |
-          cp android-app/app/build/outputs/apk/debug/app-debug.apk PS-MUSIC-STOFFIS-STUDIO-v0.8.apk
+          cp android-app/app/build/outputs/apk/debug/app-debug.apk PS-MUSIC-STOFFIS-STUDIO-v0.8.1.apk
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PS-MUSIC-STOFFIS-STUDIO-APK
-          path: PS-MUSIC-STOFFIS-STUDIO-v0.8.apk
+          path: PS-MUSIC-STOFFIS-STUDIO-v0.8.1.apk
           if-no-files-found: error
           retention-days: 30
