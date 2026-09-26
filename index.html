@@ -13,9 +13,9 @@
     <button id="projectButton" class="icon-btn" type="button" aria-label="Projekt">☰</button>
     <div class="brandmark">
       <div class="brand-title">STOFFIS STUDIO</div>
-      <div class="brand-sub">PS BÄR · Character 01</div>
+      <div class="brand-sub">PS BÄR · Character 01 · Puppet v0.8</div>
     </div>
-    <div class="status-pill"><span class="live-dot"></span><span id="statusText">Bereit</span></div>
+    <div class="status-pill"><span class="live-dot"></span><span id="statusText">Puppet lädt…</span></div>
   </header>
 
   <section id="stagePanel" class="stage-panel" aria-label="Touch Bühne">
@@ -32,8 +32,8 @@
       <div id="motionRoot" class="motion-root"></div>
     </div>
 
-    <div class="selection-pill"><span id="selectionDot"></span><b id="activeSection">Gesamte Figur</b></div>
-    <div class="touch-help">1 Finger ziehen · 2 Finger zoomen · Teil antippen & bewegen</div>
+    <div class="selection-pill"><span id="selectionDot"></span><b id="activeSection">Körper</b></div>
+    <div class="touch-help">1 Finger: Figur · 2 Finger: Zoom · Pose: Teil antippen & ziehen</div>
   </section>
 
   <nav class="bottom-nav" aria-label="Studio Werkzeuge">
@@ -49,33 +49,20 @@
     <div class="sheet-handle"></div>
 
     <div class="sheet-page" data-page="figure">
-      <div class="sheet-head"><div><small>FIGUR</small><h2>PS BÄR bearbeiten</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <div class="sheet-head"><div><small>FIGUR</small><h2>PS BÄR anfassen & positionieren</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <p class="sheet-note">Im <b>Pose-Modus</b> ein Körperteil antippen und direkt mit dem Finger ziehen. Horizontal ziehen dreht das ausgewählte Teil leicht mit.</p>
       <div class="part-strip">
-        <button class="pose-chip active" data-pose="body"><span>🧸</span><b>Ganz</b></button>
+        <button class="pose-chip active" data-pose="body"><span>🧥</span><b>Körper</b></button>
         <button class="pose-chip" data-pose="head"><span>🐻</span><b>Kopf</b></button>
         <button class="pose-chip" data-pose="leftArm"><span>👈</span><b>Arm L</b></button>
         <button class="pose-chip" data-pose="rightArm"><span>👉</span><b>Arm R</b></button>
         <button class="pose-chip" data-pose="leftLeg"><span>🦶</span><b>Bein L</b></button>
         <button class="pose-chip" data-pose="rightLeg"><span>🦶</span><b>Bein R</b></button>
       </div>
-      <div class="quick-tools">
-        <button class="menu-item active" data-section="Aussehen"><span>🎨</span><b>Aussehen</b><i>›</i></button>
-        <button class="menu-item" data-section="Kopf & Gesicht"><span>🐻</span><b>Kopf & Gesicht</b><i>›</i></button>
-        <button class="menu-item" data-section="Augen"><span>👁️</span><b>Augen</b><i>›</i></button>
-        <button class="menu-item" data-section="Mund & Emotionen"><span>😁</span><b>Mund</b><i>›</i></button>
-        <button class="menu-item" data-section="Cap"><span>🧢</span><b>Cap</b><i>›</i></button>
-        <button class="menu-item" data-section="Brille"><span>👓</span><b>Brille</b><i>›</i></button>
-        <button class="menu-item" data-section="Hoodie"><span>🧥</span><b>Hoodie</b><i>›</i></button>
-        <button class="menu-item" data-section="Arme & Beine"><span>🕺</span><b>Arme & Beine</b><i>›</i></button>
-      </div>
       <div class="slider-grid">
         <label><span>Größe</span><input id="sizeRange" type="range" min="60" max="150" value="100"><output id="sizeOut">100%</output></label>
-        <label><span>X</span><input id="xRange" type="range" min="-40" max="40" value="0"><output id="xOut">0%</output></label>
-        <label><span>Y</span><input id="yRange" type="range" min="-40" max="40" value="0"><output id="yOut">0%</output></label>
-        <label><span>Tiefe</span><input id="depthRange" type="range" min="-20" max="20" value="0"><output id="depthOut">0%</output></label>
-      </div>
-      <div class="dpad hidden-legacy">
-        <button data-nudge="up">▲</button><button data-nudge="left">◀</button><button data-nudge="right">▶</button><button data-nudge="down">▼</button>
+        <label><span>Position X</span><input id="xRange" type="range" min="-40" max="40" value="0"><output id="xOut">0px</output></label>
+        <label><span>Position Y</span><input id="yRange" type="range" min="-40" max="40" value="0"><output id="yOut">0px</output></label>
       </div>
     </div>
 
@@ -94,7 +81,7 @@
     </div>
 
     <div class="sheet-page" data-page="animation">
-      <div class="sheet-head"><div><small>BEWEGUNG</small><h2>Animationen</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <div class="sheet-head"><div><small>BEWEGUNG</small><h2>Animationen testen</h2></div><button class="sheet-close" type="button">✕</button></div>
       <div class="tile-grid animation-grid">
         <button class="anim-tile active" data-animation="idle"><span>🧸</span><b>Idle</b></button>
         <button class="anim-tile" data-animation="wave"><span>👋</span><b>Winken</b></button>
@@ -115,7 +102,7 @@
     </div>
 
     <div class="sheet-page" data-page="project">
-      <div class="sheet-head"><div><small>PROJEKT</small><h2>Speichern & Laden</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <div class="sheet-head"><div><small>PROJEKT</small><h2>Teststand speichern</h2></div><button class="sheet-close" type="button">✕</button></div>
       <div class="project-actions">
         <button id="saveBear" class="primary">💾 Aktuellen Stand speichern</button>
         <button id="loadBear">↻ Gespeicherten Stand laden</button>
