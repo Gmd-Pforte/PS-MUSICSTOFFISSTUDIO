@@ -26,6 +26,7 @@ export class StoffiBuilder {
 
   _captureBase() {
     const c = this.character;
+    const earCandidates = c.head?.children?.slice(0, 4) ?? [];
     return {
       headScale: c.head.scale.clone(),
       muzzleScale: c.muzzleGroup?.scale.clone(),
@@ -40,7 +41,7 @@ export class StoffiBuilder {
       rightLegScale: c.rightLeg?.scale.clone(),
       leftPawScale: c.leftPaw?.scale.clone(),
       rightPawScale: c.rightPaw?.scale.clone(),
-      ears: c.head?.children?.filter((obj) => obj.name?.startsWith('BUILDER_EAR_')) ?? [],
+      ears: earCandidates.map((obj) => ({ obj, scale: obj.scale.clone(), position: obj.position.clone() })),
     };
   }
 
@@ -93,7 +94,10 @@ export class StoffiBuilder {
       c.rightPaw.scale.copy(this.base.rightPawScale).multiplyScalar(v.pawSize);
     }
 
-    this.base.ears.forEach((ear) => ear.scale.setScalar(v.earSize));
+    this.base.ears.forEach(({ obj, scale, position }) => {
+      obj.scale.copy(scale).multiplyScalar(v.earSize);
+      obj.position.set(position.x * v.earSize, position.y, position.z);
+    });
   }
 
   save() {
