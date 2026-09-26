@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { PSBear } from './characters/ps-bear.js';
 import { PSBearMaster } from './characters/ps-bear-master.js';
 import { StoffiBuilder } from './builder/stoffi-builder.js';
+import { PoseController } from './pose/pose-controller.js';
 import { AudioLipSync } from './core/audio-lipsync.js';
 
 const stage = document.querySelector('#stage');
@@ -12,6 +13,7 @@ const voiceAudio = document.querySelector('#voiceAudio');
 const playVoice = document.querySelector('#playVoice');
 const stopVoice = document.querySelector('#stopVoice');
 const meterFill = document.querySelector('#meterFill');
+
 const builderToggle = document.querySelector('#builderToggle');
 const builderPanel = document.querySelector('#builderPanel');
 const builderClose = document.querySelector('#builderClose');
@@ -22,6 +24,17 @@ const partToggles = [...document.querySelectorAll('[data-part-toggle]')];
 const colorSwatches = [...document.querySelectorAll('[data-color-target]')];
 const facePresetButtons = [...document.querySelectorAll('[data-face-preset]')];
 const facePresetLabel = document.querySelector('#facePresetLabel');
+
+const poseToggle = document.querySelector('#poseToggle');
+const posePanel = document.querySelector('#posePanel');
+const poseClose = document.querySelector('#poseClose');
+const poseDone = document.querySelector('#poseDone');
+const poseSave = document.querySelector('#poseSave');
+const poseResetSelected = document.querySelector('#poseResetSelected');
+const poseResetAll = document.querySelector('#poseResetAll');
+const poseInputs = [...document.querySelectorAll('[data-pose-axis]')];
+const posePartButtons = [...document.querySelectorAll('[data-pose-part]')];
+const poseSelectedLabel = document.querySelector('#poseSelectedLabel');
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x06080f, 0.040);
@@ -101,10 +114,11 @@ const back = new THREE.PointLight(0x6d61ff, 3, 6, 2.2);
 back.position.set(0.0, 1.8, -2.5);
 scene.add(back);
 
-// Character 01 — MASTER GLB first. Until it exists, the modular PS BÄR kit is used.
 let psBear;
 let usingMaster = false;
 let builder = null;
+let pose = null;
+
 try {
   const master = new PSBearMaster();
   await master.load('./assets/characters/ps_baer/model/PS_BAER_MASTER.glb');
@@ -114,6 +128,8 @@ try {
   statusText.textContent = 'PS BÄR MASTER geladen';
   builderToggle.disabled = true;
   builderToggle.textContent = '🧩 Bausatz · Morphs folgen';
+  poseToggle.disabled = true;
+  poseToggle.textContent = '🦴 Pose · Rig folgt';
 } catch (error) {
   console.warn('PS_BAER_MASTER.glb noch nicht vorhanden — modularer PS-BÄR-Bausatz aktiv.', error);
   const kit = new PSBear();
@@ -121,9 +137,22 @@ try {
   kit.root.position.y = 0.02;
   scene.add(kit.root);
   psBear = kit;
+
   builder = new StoffiBuilder(kit);
   builder.load();
-  statusText.textContent = 'PS BÄR · Bausatz aktiv';
+
+  pose = new PoseController(kit, camera, renderer.domElement, controls, {
+    onSelect: () => {
+      syncPoseUi();
+      statusText.textContent = `PS BÄR · ${pose.label} ausgewählt`;
+    },
+    onChange: () => {
+      syncPoseUi();
+      statusText.textContent = `PS BÄR · ${pose.label} bewegen`;
+    },
+  });
+  pose.load();
+  statusText.textContent = 'PS BÄR · Bausatz & Pose bereit';
 }
 
 function formatBuilderValue(input, value) {
@@ -161,17 +190,64 @@ function syncBuilderUi() {
     facePresetLabel.textContent = labels[builder.facePreset] ?? 'Eigene Form';
   }
 }
+
+function syncPoseUi() {
+  if (!pose) return;
+  const values = pose.getSelectedValues();
+  const labels = {
+    head: 'Kopf', torso: 'Körper', leftArm: 'Arm links', rightArm: 'Arm rechts', leftLeg: 'Bein links', rightLeg: 'Bein rechts'
+  };
+  if (poseSelectedLabel) poseSelectedLabel.textContent = labels[pose.selected] ?? pose.selected;
+
+  posePartButtons.forEach((button) => {
+    button.classList.toggle('active', button.dataset.posePart === pose.selected);
+  });
+
+  poseInputs.forEach((input) => {
+    const radians = values[input.dataset.poseAxis] ?? 0;
+    const degrees = Math.round(THREE.MathUtils.radToDeg(radians));
+    input.value = String(degrees);
+    const output = input.parentElement?.querySelector('output');
+    if (output) output.textContent = `${degrees}°`;
+  });
+}
+
 syncBuilderUi();
+syncPoseUi();
+
+function setPoseOpen(open) {
+  if (!pose) return;
+  const next = Boolean(open);
+  posePanel.classList.toggle('open', next);
+  pose.setEnabled(next);
+  if (next) {
+    builderPanel.classList.remove('open');
+    psBear.setMode('idle');
+    syncPoseUi();
+    statusText.textContent = `PS BÄR · Pose-Modus · ${pose.label}`;
+  } else {
+    statusText.textContent = 'PS BÄR · Bereit';
+  }
+}
 
 function setBuilderOpen(open) {
-  builderPanel.classList.toggle('open', open);
-  if (open) {
+  const next = Boolean(open);
+  builderPanel.classList.toggle('open', next);
+  if (next) {
+    if (pose?.enabled) setPoseOpen(false);
     statusText.textContent = builder ? 'PS BÄR · Bauteile bearbeiten' : 'Bausatz für MASTER-Modell folgt';
   }
 }
 
 builderToggle.addEventListener('click', () => setBuilderOpen(!builderPanel.classList.contains('open')));
 builderClose.addEventListener('click', () => setBuilderOpen(false));
+poseToggle.addEventListener('click', () => setPoseOpen(!posePanel.classList.contains('open')));
+poseClose.addEventListener('click', () => setPoseOpen(false));
+poseDone.addEventListener('click', () => {
+  pose?.save();
+  setPoseOpen(false);
+  statusText.textContent = 'PS BÄR · Pose gespeichert';
+});
 
 builderInputs.forEach((input) => {
   input.addEventListener('input', () => {
@@ -216,14 +292,54 @@ colorSwatches.forEach((button) => {
 builderSave.addEventListener('click', () => {
   if (!builder) return;
   builder.save();
+  pose?.save();
   statusText.textContent = 'PS BÄR · Stoffi gespeichert';
 });
 
 builderReset.addEventListener('click', () => {
   if (!builder) return;
   builder.reset();
+  pose?.resetAll();
   syncBuilderUi();
+  syncPoseUi();
   statusText.textContent = 'PS BÄR · Original wiederhergestellt';
+});
+
+posePartButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    if (!pose) return;
+    pose.select(button.dataset.posePart);
+    syncPoseUi();
+  });
+});
+
+poseInputs.forEach((input) => {
+  input.addEventListener('input', () => {
+    if (!pose) return;
+    const radians = THREE.MathUtils.degToRad(Number(input.value));
+    pose.setAxis(input.dataset.poseAxis, radians);
+    syncPoseUi();
+  });
+});
+
+poseSave.addEventListener('click', () => {
+  if (!pose) return;
+  pose.save();
+  statusText.textContent = 'PS BÄR · Pose gespeichert';
+});
+
+poseResetSelected.addEventListener('click', () => {
+  if (!pose) return;
+  pose.resetSelected();
+  syncPoseUi();
+  statusText.textContent = `PS BÄR · ${pose.label} zurückgesetzt`;
+});
+
+poseResetAll.addEventListener('click', () => {
+  if (!pose) return;
+  pose.resetAll();
+  syncPoseUi();
+  statusText.textContent = 'PS BÄR · Pose zurückgesetzt';
 });
 
 function makeNote(text, color, position, scale = 0.30) {
@@ -255,6 +371,7 @@ const notes = [
 const actionButtons = [...document.querySelectorAll('[data-action]')];
 actionButtons.forEach((button) => {
   button.addEventListener('click', () => {
+    if (pose?.enabled) setPoseOpen(false);
     psBear.setMode(button.dataset.action);
     actionButtons.forEach((b) => b.classList.toggle('active', b === button));
     statusText.textContent = `PS BÄR · ${button.querySelector('span').textContent}`;
@@ -308,8 +425,8 @@ function animate() {
   if (usingMaster) psBear.update(dt);
   else psBear.update(elapsed, dt);
 
-  // The builder keeps the chosen kit dimensions applied while the preview animates.
   builder?.apply();
+  if (pose?.enabled) pose.apply();
 
   notes.forEach((note, i) => {
     note.position.y += Math.sin(elapsed * 1.1 + i) * 0.0004;
