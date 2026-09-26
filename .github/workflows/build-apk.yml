@@ -10,6 +10,14 @@ on:
       - 'src/**'
       - 'android-app/**'
       - '.github/workflows/build-apk.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'styles.css'
+      - 'character-01.json'
+      - 'src/**'
+      - 'android-app/**'
+      - '.github/workflows/build-apk.yml'
 
 jobs:
   build-apk:
