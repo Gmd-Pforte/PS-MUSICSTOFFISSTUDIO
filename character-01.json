@@ -1,0 +1,19 @@
+{
+  "id": "ps_baer",
+  "name": "PS BÄR",
+  "series": "PS MUSIC STOFFIS STUDIO",
+  "type": "stylized_plush_3d_avatar",
+  "version": 1,
+  "look": {
+    "fur": "warm brown",
+    "cap": "black",
+    "glasses": "black rectangular",
+    "hoodie": "black with PS AI MUSIC neon logo"
+  },
+  "animations": ["idle", "wave", "walk", "look", "happy", "sad"],
+  "face": {
+    "blink": true,
+    "audio_mouth_sync": true,
+    "future_visemes": true
+  }
+}
