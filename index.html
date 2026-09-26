@@ -33,24 +33,73 @@
         <button id="builderClose" class="icon-button" type="button">✕</button>
       </div>
 
-      <p class="builder-copy">Unser erster Stoffi ist die Vorlage. Mit den Reglern veränderst du seine Bauteile direkt am 3D-Modell.</p>
+      <p class="builder-copy">PS BÄR ist jetzt unser erster echter Stoffi-Bausatz. Gesicht, Cap, Brille, Hoodie und Körper lassen sich getrennt bearbeiten.</p>
 
       <div class="builder-scroll">
-        <label class="builder-row"><span>Kopfbreite</span><input type="range" min="0.75" max="1.28" step="0.01" value="1" data-build="headWidth"><output>100%</output></label>
-        <label class="builder-row"><span>Kopfhöhe</span><input type="range" min="0.78" max="1.24" step="0.01" value="1" data-build="headHeight"><output>100%</output></label>
-        <label class="builder-row"><span>Schnauze</span><input type="range" min="0.72" max="1.28" step="0.01" value="1" data-build="muzzleSize"><output>100%</output></label>
-        <label class="builder-row"><span>Ohren</span><input type="range" min="0.72" max="1.28" step="0.01" value="1" data-build="earSize"><output>100%</output></label>
-        <label class="builder-row"><span>Augengröße</span><input type="range" min="0.72" max="1.22" step="0.01" value="1" data-build="eyeSize"><output>100%</output></label>
-        <label class="builder-row"><span>Augenabstand</span><input type="range" min="0.78" max="1.22" step="0.01" value="1" data-build="eyeSpacing"><output>100%</output></label>
-        <label class="builder-row"><span>Körperbreite</span><input type="range" min="0.75" max="1.28" step="0.01" value="1" data-build="bodyWidth"><output>100%</output></label>
-        <label class="builder-row"><span>Körperhöhe</span><input type="range" min="0.82" max="1.20" step="0.01" value="1" data-build="bodyHeight"><output>100%</output></label>
-        <label class="builder-row"><span>Armlänge</span><input type="range" min="0.75" max="1.25" step="0.01" value="1" data-build="armLength"><output>100%</output></label>
-        <label class="builder-row"><span>Beinlänge</span><input type="range" min="0.75" max="1.25" step="0.01" value="1" data-build="legLength"><output>100%</output></label>
-        <label class="builder-row"><span>Pfoten</span><input type="range" min="0.78" max="1.25" step="0.01" value="1" data-build="pawSize"><output>100%</output></label>
+        <section class="builder-section">
+          <div class="builder-section-title"><span>😊 Gesicht</span><small id="facePresetLabel">PS Original</small></div>
+          <div class="choice-row" aria-label="Gesichtsvarianten">
+            <button class="choice active" type="button" data-face-preset="original">PS Original</button>
+            <button class="choice" type="button" data-face-preset="soft">Weicher</button>
+            <button class="choice" type="button" data-face-preset="curious">Neugierig</button>
+          </div>
+          <label class="builder-row"><span>Kopfbreite</span><input type="range" min="0.75" max="1.28" step="0.01" value="1" data-build="headWidth"><output>100%</output></label>
+          <label class="builder-row"><span>Kopfhöhe</span><input type="range" min="0.78" max="1.24" step="0.01" value="1" data-build="headHeight"><output>100%</output></label>
+          <label class="builder-row"><span>Schnauze</span><input type="range" min="0.72" max="1.28" step="0.01" value="1" data-build="muzzleSize"><output>100%</output></label>
+          <label class="builder-row"><span>Ohren</span><input type="range" min="0.72" max="1.28" step="0.01" value="1" data-build="earSize"><output>100%</output></label>
+          <label class="builder-row"><span>Augengröße</span><input type="range" min="0.72" max="1.22" step="0.01" value="1" data-build="eyeSize"><output>100%</output></label>
+          <label class="builder-row"><span>Augenabstand</span><input type="range" min="0.78" max="1.22" step="0.01" value="1" data-build="eyeSpacing"><output>100%</output></label>
+        </section>
+
+        <section class="builder-section">
+          <div class="builder-section-title"><span>🧢 Cap</span><button class="part-toggle active" type="button" data-part-toggle="cap">AN</button></div>
+          <div class="swatch-row" aria-label="Cap Farbe">
+            <button class="swatch active" type="button" data-color-target="cap" data-color="#11131a" style="--swatch:#11131a" aria-label="Schwarz"></button>
+            <button class="swatch" type="button" data-color-target="cap" data-color="#232a38" style="--swatch:#232a38" aria-label="Anthrazit"></button>
+            <button class="swatch" type="button" data-color-target="cap" data-color="#20162f" style="--swatch:#20162f" aria-label="Dunkelviolett"></button>
+          </div>
+          <label class="builder-row"><span>Größe</span><input type="range" min="0.82" max="1.18" step="0.01" value="1" data-build="capScale"><output>100%</output></label>
+          <label class="builder-row"><span>Neigung</span><input type="range" min="-0.24" max="0.24" step="0.01" value="0" data-build="capTilt" data-format="degree"><output>0°</output></label>
+        </section>
+
+        <section class="builder-section">
+          <div class="builder-section-title"><span>👓 Brille</span><button class="part-toggle active" type="button" data-part-toggle="glasses">AN</button></div>
+          <div class="swatch-row" aria-label="Brillenfarbe">
+            <button class="swatch active" type="button" data-color-target="glasses" data-color="#040405" style="--swatch:#040405" aria-label="Schwarz"></button>
+            <button class="swatch" type="button" data-color-target="glasses" data-color="#202631" style="--swatch:#202631" aria-label="Graphit"></button>
+            <button class="swatch" type="button" data-color-target="glasses" data-color="#3a214d" style="--swatch:#3a214d" aria-label="Violett"></button>
+          </div>
+          <label class="builder-row"><span>Größe</span><input type="range" min="0.82" max="1.20" step="0.01" value="1" data-build="glassesScale"><output>100%</output></label>
+          <label class="builder-row"><span>Breite</span><input type="range" min="0.86" max="1.18" step="0.01" value="1" data-build="glassesWidth"><output>100%</output></label>
+        </section>
+
+        <section class="builder-section">
+          <div class="builder-section-title"><span>🧥 Hoodie</span><button class="part-toggle active" type="button" data-part-toggle="hoodie">AN</button></div>
+          <div class="inline-toggle-row">
+            <span>PS AI MUSIC Logo</span>
+            <button class="part-toggle active" type="button" data-part-toggle="logo">AN</button>
+          </div>
+          <div class="swatch-row" aria-label="Hoodie Farbe">
+            <button class="swatch active" type="button" data-color-target="hoodie" data-color="#090a0d" style="--swatch:#090a0d" aria-label="PS Schwarz"></button>
+            <button class="swatch" type="button" data-color-target="hoodie" data-color="#161a24" style="--swatch:#161a24" aria-label="Anthrazit"></button>
+            <button class="swatch" type="button" data-color-target="hoodie" data-color="#171126" style="--swatch:#171126" aria-label="Dunkelviolett"></button>
+            <button class="swatch" type="button" data-color-target="hoodie" data-color="#0d1820" style="--swatch:#0d1820" aria-label="Dunkelblau"></button>
+          </div>
+          <label class="builder-row"><span>Sitz</span><input type="range" min="0.90" max="1.12" step="0.01" value="1" data-build="hoodieFit"><output>100%</output></label>
+        </section>
+
+        <section class="builder-section">
+          <div class="builder-section-title"><span>🧸 Körper</span><small>Grundform</small></div>
+          <label class="builder-row"><span>Körperbreite</span><input type="range" min="0.75" max="1.28" step="0.01" value="1" data-build="bodyWidth"><output>100%</output></label>
+          <label class="builder-row"><span>Körperhöhe</span><input type="range" min="0.82" max="1.20" step="0.01" value="1" data-build="bodyHeight"><output>100%</output></label>
+          <label class="builder-row"><span>Armlänge</span><input type="range" min="0.75" max="1.25" step="0.01" value="1" data-build="armLength"><output>100%</output></label>
+          <label class="builder-row"><span>Beinlänge</span><input type="range" min="0.75" max="1.25" step="0.01" value="1" data-build="legLength"><output>100%</output></label>
+          <label class="builder-row"><span>Pfoten</span><input type="range" min="0.78" max="1.25" step="0.01" value="1" data-build="pawSize"><output>100%</output></label>
+        </section>
       </div>
 
       <div class="builder-actions">
-        <button id="builderSave" class="secondary" type="button">💾 Speichern</button>
+        <button id="builderSave" class="secondary" type="button">💾 Stoffi speichern</button>
         <button id="builderReset" class="secondary" type="button">↺ PS BÄR Original</button>
       </div>
     </aside>
@@ -75,7 +124,7 @@
       <div class="audio-meter" aria-label="Sprachaktivität">
         <div id="meterFill"></div>
       </div>
-      <p class="hint">Bausatz = PS BÄR direkt formen · Audio = erster automatischer Mund-Sync.</p>
+      <p class="hint">Bausatz = PS BÄR direkt formen und Bauteile wählen · Audio = erster automatischer Mund-Sync.</p>
     </section>
 
     <div class="camera-help glass">Ziehen = drehen · Mausrad / Pinch = Zoom</div>
