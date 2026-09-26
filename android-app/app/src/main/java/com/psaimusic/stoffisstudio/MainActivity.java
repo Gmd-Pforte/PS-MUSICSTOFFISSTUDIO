@@ -43,10 +43,27 @@ public class MainActivity extends Activity {
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setDefaultTextEncodingName("utf-8");
-        // Needed because the bundled local studio loads Three.js modules over HTTPS.
         settings.setAllowUniversalAccessFromFileURLs(true);
+        settings.setAllowFileAccessFromFileURLs(true);
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                // Some Android WebView builds are unreliable with local file:// ES modules.
+                // The studio scripts are classic-compatible, so load them as a fallback only
+                // when the module version did not initialize the runtime.
+                String fallback = "setTimeout(function(){" +
+                        "if(!window.StoffisPuppet||!window.StoffisPuppet.ready){" +
+                        "var p=document.createElement('script');p.src='./src/puppet.js?v=081';" +
+                        "p.onload=function(){if(!window.StoffisTouchReady){var t=document.createElement('script');t.src='./src/studio-touch.js?v=081';document.body.appendChild(t);}};" +
+                        "document.body.appendChild(p);" +
+                        "}else if(!window.StoffisTouchReady){var t=document.createElement('script');t.src='./src/studio-touch.js?v=081';document.body.appendChild(t);}" +
+                        "},700);";
+                view.evaluateJavascript(fallback, null);
+            }
+        });
+
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onShowFileChooser(
