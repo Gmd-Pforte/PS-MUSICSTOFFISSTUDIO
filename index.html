@@ -3,112 +3,130 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <meta name="theme-color" content="#040713" />
-  <title>PS BÄR · STOFFIS STUDIO</title>
+  <meta name="theme-color" content="#050812" />
+  <title>STOFFIS STUDIO · PS BÄR</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
 <main class="studio-shell">
-  <header class="brandbar">
-    <div class="brandmark"><div class="brand-title">PS BÄR</div><div class="brand-sub">STOFFIS STUDIO</div></div>
-    <div class="status-pill"><span class="live-dot"></span><span id="statusText">PS BÄR lädt…</span></div>
+  <header class="topbar">
+    <button id="projectButton" class="icon-btn" type="button" aria-label="Projekt">☰</button>
+    <div class="brandmark">
+      <div class="brand-title">STOFFIS STUDIO</div>
+      <div class="brand-sub">PS BÄR · Character 01</div>
+    </div>
+    <div class="status-pill"><span class="live-dot"></span><span id="statusText">Bereit</span></div>
   </header>
 
-  <section class="workspace">
-    <aside class="panel sidebar" aria-label="Aussehen">
-      <button class="menu-item active" data-section="Aussehen"><span>🖌️</span><b>Aussehen</b><i>›</i></button>
-      <button class="menu-item" data-section="Kopf & Gesicht"><span>🐻</span><b>Kopf & Gesicht</b><i>›</i></button>
-      <button class="menu-item" data-section="Augen"><span>👁️</span><b>Augen</b><i>›</i></button>
-      <button class="menu-item" data-section="Mund & Emotionen"><span>😁</span><b>Mund & Emotionen</b><i>›</i></button>
-      <button class="menu-item" data-section="Cap"><span>🧢</span><b>Cap</b><i>›</i></button>
-      <button class="menu-item" data-section="Brille"><span>👓</span><b>Brille</b><i>›</i></button>
-      <button class="menu-item" data-section="Hoodie"><span>🥼</span><b>Hoodie</b><i>›</i></button>
-      <button class="menu-item" data-section="Körper"><span>🧸</span><b>Körper</b><i>›</i></button>
-      <button class="menu-item" data-section="Arme & Beine"><span>🕺</span><b>Arme & Beine</b><i>›</i></button>
-    </aside>
+  <section id="stagePanel" class="stage-panel" aria-label="Touch Bühne">
+    <div class="stage-grid"></div>
+    <div class="stage-glow"></div>
 
-    <section class="stage-panel" aria-label="PS BÄR Bühne">
-      <div class="stage-glow"></div>
-      <div id="bearRig" class="bear-rig anim-idle" aria-live="polite">
-        <div id="motionRoot" class="motion-root"></div>
-      </div>
-      <div class="stage-caption"><b id="activeSection">Aussehen</b><span>HQ 2D Puppet · echte Einzelteile</span></div>
-    </section>
+    <div class="stage-toolbar">
+      <button class="stage-tool active" data-touch-mode="move" type="button">✋<span>Bewegen</span></button>
+      <button class="stage-tool" data-touch-mode="pose" type="button">🦴<span>Pose</span></button>
+      <button class="stage-tool" data-touch-mode="zoom" type="button">🔍<span>Zoom</span></button>
+    </div>
 
-    <aside class="right-stack">
-      <section class="panel card expressions">
-        <div class="panel-title"><span>✚</span><b>Gesichtsausdrücke</b></div>
-        <div class="tile-grid">
-          <button class="face-tile active" data-expression="normal"><span>🙂</span><b>Normal</b></button>
-          <button class="face-tile" data-expression="happy"><span>😄</span><b>Fröhlich</b></button>
-          <button class="face-tile" data-expression="sad"><span>😢</span><b>Traurig</b></button>
-          <button class="face-tile" data-expression="surprised"><span>😮</span><b>Überrascht</b></button>
-          <button class="face-tile" data-expression="angry"><span>😠</span><b>Wütend</b></button>
-          <button class="face-tile" data-expression="wink"><span>😉</span><b>Zwinkern</b></button>
-          <button class="face-tile" data-expression="smile"><span>😊</span><b>Lächeln</b></button>
-          <button class="face-tile" data-expression="think"><span>🤔</span><b>Denken</b></button>
-        </div>
-      </section>
+    <div id="bearRig" class="bear-rig anim-idle" aria-live="polite">
+      <div id="motionRoot" class="motion-root"></div>
+    </div>
 
-      <section class="panel card animations">
-        <div class="panel-title"><span>▶</span><b>Animationen</b></div>
-        <div class="tile-grid anim-grid">
-          <button class="anim-tile active" data-animation="idle"><span>🧸</span><b>Idle</b></button>
-          <button class="anim-tile" data-animation="wave"><span>👋</span><b>Winken</b></button>
-          <button class="anim-tile" data-animation="walk"><span>🚶</span><b>Laufen</b></button>
-          <button class="anim-tile" data-animation="dance"><span>🕺</span><b>Tanzen</b></button>
-          <button class="anim-tile" data-animation="sit"><span>🪑</span><b>Sitzen</b></button>
-          <button class="anim-tile" data-animation="talk"><span>🗣️</span><b>Sprechen</b></button>
-        </div>
-      </section>
-
-      <section class="panel card voice-card">
-        <div class="panel-title"><span>🎙️</span><b>Stimme & Sprache</b></div>
-        <div class="wavebar"><div id="meterFill"></div></div>
-        <div class="time-row"><span id="voiceName">Kein Sprachclip</span><span id="voiceTime">0:00 / 0:00</span></div>
-        <label class="primary upload-label" for="voiceFile">📁 Sprachclip laden</label>
-        <input id="voiceFile" type="file" accept="audio/*" />
-        <div class="voice-actions"><button id="playVoice" disabled>▶ Abspielen</button><button id="stopVoice" disabled>■ Stop</button></div>
-      </section>
-    </aside>
+    <div class="selection-pill"><span id="selectionDot"></span><b id="activeSection">Gesamte Figur</b></div>
+    <div class="touch-help">1 Finger ziehen · 2 Finger zoomen · Teil antippen & bewegen</div>
   </section>
 
-  <section class="bottom-grid">
-    <section class="panel card pose-card">
-      <div class="panel-title"><span>📌</span><b>Pose & Bewegung</b></div>
-      <div class="pose-content">
-        <div class="dpad">
-          <button data-nudge="up">▲</button><button data-nudge="left">◀</button><button data-nudge="right">▶</button><button data-nudge="down">▼</button>
-        </div>
-        <div class="pose-chips">
-          <button class="pose-chip active" data-pose="head"><span>🐻</span><b>Kopf</b></button>
-          <button class="pose-chip" data-pose="leftArm"><span>👈</span><b>Links Arm</b></button>
-          <button class="pose-chip" data-pose="rightArm"><span>👉</span><b>Rechts Arm</b></button>
-          <button class="pose-chip" data-pose="leftLeg"><span>🦶</span><b>Links Bein</b></button>
-          <button class="pose-chip" data-pose="rightLeg"><span>🦶</span><b>Rechts Bein</b></button>
-          <button class="pose-chip" data-pose="body"><span>🧥</span><b>Körper</b></button>
-        </div>
+  <nav class="bottom-nav" aria-label="Studio Werkzeuge">
+    <button class="nav-btn active" data-sheet="none"><span>🎬</span><b>Bühne</b></button>
+    <button class="nav-btn" data-sheet="figure"><span>🧩</span><b>Figur</b></button>
+    <button class="nav-btn" data-sheet="face"><span>🙂</span><b>Mimik</b></button>
+    <button class="nav-btn" data-sheet="animation"><span>▶</span><b>Animation</b></button>
+    <button class="nav-btn" data-sheet="voice"><span>🎙️</span><b>Stimme</b></button>
+    <button class="nav-btn" data-sheet="project"><span>💾</span><b>Projekt</b></button>
+  </nav>
+
+  <section id="studioSheet" class="studio-sheet" aria-label="Werkzeugfenster">
+    <div class="sheet-handle"></div>
+
+    <div class="sheet-page" data-page="figure">
+      <div class="sheet-head"><div><small>FIGUR</small><h2>PS BÄR bearbeiten</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <div class="part-strip">
+        <button class="pose-chip active" data-pose="body"><span>🧸</span><b>Ganz</b></button>
+        <button class="pose-chip" data-pose="head"><span>🐻</span><b>Kopf</b></button>
+        <button class="pose-chip" data-pose="leftArm"><span>👈</span><b>Arm L</b></button>
+        <button class="pose-chip" data-pose="rightArm"><span>👉</span><b>Arm R</b></button>
+        <button class="pose-chip" data-pose="leftLeg"><span>🦶</span><b>Bein L</b></button>
+        <button class="pose-chip" data-pose="rightLeg"><span>🦶</span><b>Bein R</b></button>
       </div>
-    </section>
+      <div class="quick-tools">
+        <button class="menu-item active" data-section="Aussehen"><span>🎨</span><b>Aussehen</b><i>›</i></button>
+        <button class="menu-item" data-section="Kopf & Gesicht"><span>🐻</span><b>Kopf & Gesicht</b><i>›</i></button>
+        <button class="menu-item" data-section="Augen"><span>👁️</span><b>Augen</b><i>›</i></button>
+        <button class="menu-item" data-section="Mund & Emotionen"><span>😁</span><b>Mund</b><i>›</i></button>
+        <button class="menu-item" data-section="Cap"><span>🧢</span><b>Cap</b><i>›</i></button>
+        <button class="menu-item" data-section="Brille"><span>👓</span><b>Brille</b><i>›</i></button>
+        <button class="menu-item" data-section="Hoodie"><span>🧥</span><b>Hoodie</b><i>›</i></button>
+        <button class="menu-item" data-section="Arme & Beine"><span>🕺</span><b>Arme & Beine</b><i>›</i></button>
+      </div>
+      <div class="slider-grid">
+        <label><span>Größe</span><input id="sizeRange" type="range" min="60" max="150" value="100"><output id="sizeOut">100%</output></label>
+        <label><span>X</span><input id="xRange" type="range" min="-40" max="40" value="0"><output id="xOut">0%</output></label>
+        <label><span>Y</span><input id="yRange" type="range" min="-40" max="40" value="0"><output id="yOut">0%</output></label>
+        <label><span>Tiefe</span><input id="depthRange" type="range" min="-20" max="20" value="0"><output id="depthOut">0%</output></label>
+      </div>
+      <div class="dpad hidden-legacy">
+        <button data-nudge="up">▲</button><button data-nudge="left">◀</button><button data-nudge="right">▶</button><button data-nudge="down">▼</button>
+      </div>
+    </div>
 
-    <section class="panel card size-card">
-      <div class="panel-title"><span>✚</span><b>Größe & Position</b></div>
-      <label><span>Größe</span><input id="sizeRange" type="range" min="72" max="128" value="100"><output id="sizeOut">100%</output></label>
-      <label><span>Höhe</span><input id="yRange" type="range" min="-18" max="18" value="0"><output id="yOut">0%</output></label>
-      <label><span>Breite</span><input id="xRange" type="range" min="-18" max="18" value="0"><output id="xOut">0%</output></label>
-      <label><span>Tiefe</span><input id="depthRange" type="range" min="-12" max="12" value="0"><output id="depthOut">0%</output></label>
-    </section>
+    <div class="sheet-page" data-page="face">
+      <div class="sheet-head"><div><small>MIMIK</small><h2>Gesichtsausdrücke</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <div class="tile-grid face-grid">
+        <button class="face-tile active" data-expression="normal"><span>🙂</span><b>Normal</b></button>
+        <button class="face-tile" data-expression="happy"><span>😄</span><b>Fröhlich</b></button>
+        <button class="face-tile" data-expression="sad"><span>😢</span><b>Traurig</b></button>
+        <button class="face-tile" data-expression="surprised"><span>😮</span><b>Überrascht</b></button>
+        <button class="face-tile" data-expression="angry"><span>😠</span><b>Wütend</b></button>
+        <button class="face-tile" data-expression="wink"><span>😉</span><b>Zwinkern</b></button>
+        <button class="face-tile" data-expression="smile"><span>😊</span><b>Lächeln</b></button>
+        <button class="face-tile" data-expression="think"><span>🤔</span><b>Denken</b></button>
+      </div>
+    </div>
 
-    <section class="panel card save-card">
-      <div class="panel-title"><span>💾</span><b>Speichern & Laden</b></div>
-      <button id="saveBear" class="primary">💾 Aktuellen Bär speichern</button>
-      <button id="loadBear">↻ PS BÄR laden</button>
-      <button id="resetBear" class="danger">🗑 Zurücksetzen</button>
-    </section>
+    <div class="sheet-page" data-page="animation">
+      <div class="sheet-head"><div><small>BEWEGUNG</small><h2>Animationen</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <div class="tile-grid animation-grid">
+        <button class="anim-tile active" data-animation="idle"><span>🧸</span><b>Idle</b></button>
+        <button class="anim-tile" data-animation="wave"><span>👋</span><b>Winken</b></button>
+        <button class="anim-tile" data-animation="walk"><span>🚶</span><b>Laufen</b></button>
+        <button class="anim-tile" data-animation="dance"><span>🕺</span><b>Tanzen</b></button>
+        <button class="anim-tile" data-animation="sit"><span>🪑</span><b>Sitzen</b></button>
+        <button class="anim-tile" data-animation="talk"><span>🗣️</span><b>Sprechen</b></button>
+      </div>
+    </div>
+
+    <div class="sheet-page" data-page="voice">
+      <div class="sheet-head"><div><small>AUDIO</small><h2>Stimme & Sprache</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <div class="wavebar"><div id="meterFill"></div></div>
+      <div class="time-row"><span id="voiceName">Kein Sprachclip</span><span id="voiceTime">0:00 / 0:00</span></div>
+      <label class="primary upload-label" for="voiceFile">📁 Sprachclip laden</label>
+      <input id="voiceFile" type="file" accept="audio/*" />
+      <div class="voice-actions"><button id="playVoice" disabled>▶ Abspielen</button><button id="stopVoice" disabled>■ Stop</button></div>
+    </div>
+
+    <div class="sheet-page" data-page="project">
+      <div class="sheet-head"><div><small>PROJEKT</small><h2>Speichern & Laden</h2></div><button class="sheet-close" type="button">✕</button></div>
+      <div class="project-actions">
+        <button id="saveBear" class="primary">💾 Aktuellen Stand speichern</button>
+        <button id="loadBear">↻ Gespeicherten Stand laden</button>
+        <button id="resetBear" class="danger">🗑 Auf Standard zurücksetzen</button>
+      </div>
+    </div>
   </section>
 
   <audio id="voiceAudio" preload="metadata"></audio>
 </main>
 <script type="module" src="./src/puppet.js"></script>
+<script type="module" src="./src/studio-touch.js"></script>
 </body>
 </html>
