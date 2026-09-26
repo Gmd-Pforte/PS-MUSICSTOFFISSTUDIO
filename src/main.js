@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { PSBear } from './characters/ps-bear.js';
 import { PSBearMaster } from './characters/ps-bear-master.js';
+import { StoffiBuilder } from './builder/stoffi-builder.js';
 import { AudioLipSync } from './core/audio-lipsync.js';
 
 const stage = document.querySelector('#stage');
@@ -11,6 +12,12 @@ const voiceAudio = document.querySelector('#voiceAudio');
 const playVoice = document.querySelector('#playVoice');
 const stopVoice = document.querySelector('#stopVoice');
 const meterFill = document.querySelector('#meterFill');
+const builderToggle = document.querySelector('#builderToggle');
+const builderPanel = document.querySelector('#builderPanel');
+const builderClose = document.querySelector('#builderClose');
+const builderSave = document.querySelector('#builderSave');
+const builderReset = document.querySelector('#builderReset');
+const builderInputs = [...document.querySelectorAll('[data-build]')];
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x06080f, 0.040);
@@ -90,9 +97,10 @@ const back = new THREE.PointLight(0x6d61ff, 3, 6, 2.2);
 back.position.set(0.0, 1.8, -2.5);
 scene.add(back);
 
-// Character 01 — production GLB first, old procedural model only as fallback.
+// Character 01 — MASTER GLB first. Until it exists, the modular PS BÄR kit is used.
 let psBear;
 let usingMaster = false;
+let builder = null;
 try {
   const master = new PSBearMaster();
   await master.load('./assets/characters/ps_baer/model/PS_BAER_MASTER.glb');
@@ -100,15 +108,63 @@ try {
   psBear = master;
   usingMaster = true;
   statusText.textContent = 'PS BÄR MASTER geladen';
+  builderToggle.disabled = true;
+  builderToggle.textContent = '🧩 Bausatz · Morphs folgen';
 } catch (error) {
-  console.warn('PS_BAER_MASTER.glb noch nicht vorhanden — technischer Fallback aktiv.', error);
-  const fallback = new PSBear();
-  fallback.root.scale.setScalar(0.45);
-  fallback.root.position.y = 0.02;
-  scene.add(fallback.root);
-  psBear = fallback;
-  statusText.textContent = 'PS BÄR · Preview bis MASTER.glb fertig ist';
+  console.warn('PS_BAER_MASTER.glb noch nicht vorhanden — modularer PS-BÄR-Bausatz aktiv.', error);
+  const kit = new PSBear();
+  kit.root.scale.setScalar(0.45);
+  kit.root.position.y = 0.02;
+  scene.add(kit.root);
+  psBear = kit;
+  builder = new StoffiBuilder(kit);
+  builder.load();
+  statusText.textContent = 'PS BÄR · Bausatz aktiv';
 }
+
+function syncBuilderUi() {
+  if (!builder) return;
+  builderInputs.forEach((input) => {
+    const value = builder.values[input.dataset.build] ?? 1;
+    input.value = String(value);
+    const output = input.parentElement?.querySelector('output');
+    if (output) output.textContent = `${Math.round(value * 100)}%`;
+  });
+}
+syncBuilderUi();
+
+function setBuilderOpen(open) {
+  builderPanel.classList.toggle('open', open);
+  if (open) {
+    statusText.textContent = builder ? 'PS BÄR · Bausatz bearbeiten' : 'Bausatz für MASTER-Modell folgt';
+  }
+}
+
+builderToggle.addEventListener('click', () => setBuilderOpen(!builderPanel.classList.contains('open')));
+builderClose.addEventListener('click', () => setBuilderOpen(false));
+
+builderInputs.forEach((input) => {
+  input.addEventListener('input', () => {
+    if (!builder) return;
+    builder.set(input.dataset.build, input.value);
+    const output = input.parentElement?.querySelector('output');
+    if (output) output.textContent = `${Math.round(Number(input.value) * 100)}%`;
+    statusText.textContent = `PS BÄR · ${input.parentElement?.querySelector('span')?.textContent ?? 'Bausatz'}`;
+  });
+});
+
+builderSave.addEventListener('click', () => {
+  if (!builder) return;
+  builder.save();
+  statusText.textContent = 'PS BÄR · Bausatz gespeichert';
+});
+
+builderReset.addEventListener('click', () => {
+  if (!builder) return;
+  builder.reset();
+  syncBuilderUi();
+  statusText.textContent = 'PS BÄR · Original-Proportionen';
+});
 
 function makeNote(text, color, position, scale = 0.30) {
   const canvas = document.createElement('canvas');
@@ -191,6 +247,9 @@ function animate() {
   elapsed += dt;
   if (usingMaster) psBear.update(dt);
   else psBear.update(elapsed, dt);
+
+  // Alpha builder reapplies the chosen proportions after animation updates.
+  builder?.apply();
 
   notes.forEach((note, i) => {
     note.position.y += Math.sin(elapsed * 1.1 + i) * 0.0004;
