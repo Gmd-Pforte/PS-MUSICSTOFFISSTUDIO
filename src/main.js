@@ -18,6 +18,10 @@ const builderClose = document.querySelector('#builderClose');
 const builderSave = document.querySelector('#builderSave');
 const builderReset = document.querySelector('#builderReset');
 const builderInputs = [...document.querySelectorAll('[data-build]')];
+const partToggles = [...document.querySelectorAll('[data-part-toggle]')];
+const colorSwatches = [...document.querySelectorAll('[data-color-target]')];
+const facePresetButtons = [...document.querySelectorAll('[data-face-preset]')];
+const facePresetLabel = document.querySelector('#facePresetLabel');
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x06080f, 0.040);
@@ -122,21 +126,47 @@ try {
   statusText.textContent = 'PS BÄR · Bausatz aktiv';
 }
 
+function formatBuilderValue(input, value) {
+  if (input.dataset.format === 'degree') return `${Math.round(value * 180 / Math.PI)}°`;
+  return `${Math.round(value * 100)}%`;
+}
+
 function syncBuilderUi() {
   if (!builder) return;
+
   builderInputs.forEach((input) => {
-    const value = builder.values[input.dataset.build] ?? 1;
+    const value = builder.values[input.dataset.build] ?? Number(input.value) ?? 1;
     input.value = String(value);
     const output = input.parentElement?.querySelector('output');
-    if (output) output.textContent = `${Math.round(value * 100)}%`;
+    if (output) output.textContent = formatBuilderValue(input, value);
   });
+
+  partToggles.forEach((button) => {
+    const active = Boolean(builder.parts[button.dataset.partToggle]);
+    button.classList.toggle('active', active);
+    button.textContent = active ? 'AN' : 'AUS';
+  });
+
+  colorSwatches.forEach((button) => {
+    const target = button.dataset.colorTarget;
+    const active = builder.colors[target]?.toLowerCase() === button.dataset.color?.toLowerCase();
+    button.classList.toggle('active', active);
+  });
+
+  facePresetButtons.forEach((button) => {
+    button.classList.toggle('active', builder.facePreset === button.dataset.facePreset);
+  });
+  if (facePresetLabel) {
+    const labels = { original: 'PS Original', soft: 'Weicher', curious: 'Neugierig', custom: 'Eigene Form' };
+    facePresetLabel.textContent = labels[builder.facePreset] ?? 'Eigene Form';
+  }
 }
 syncBuilderUi();
 
 function setBuilderOpen(open) {
   builderPanel.classList.toggle('open', open);
   if (open) {
-    statusText.textContent = builder ? 'PS BÄR · Bausatz bearbeiten' : 'Bausatz für MASTER-Modell folgt';
+    statusText.textContent = builder ? 'PS BÄR · Bauteile bearbeiten' : 'Bausatz für MASTER-Modell folgt';
   }
 }
 
@@ -148,22 +178,52 @@ builderInputs.forEach((input) => {
     if (!builder) return;
     builder.set(input.dataset.build, input.value);
     const output = input.parentElement?.querySelector('output');
-    if (output) output.textContent = `${Math.round(Number(input.value) * 100)}%`;
+    if (output) output.textContent = formatBuilderValue(input, Number(input.value));
+    syncBuilderUi();
     statusText.textContent = `PS BÄR · ${input.parentElement?.querySelector('span')?.textContent ?? 'Bausatz'}`;
+  });
+});
+
+facePresetButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    if (!builder) return;
+    builder.applyFacePreset(button.dataset.facePreset);
+    syncBuilderUi();
+    statusText.textContent = `PS BÄR · Gesicht ${button.textContent}`;
+  });
+});
+
+partToggles.forEach((button) => {
+  button.addEventListener('click', () => {
+    if (!builder) return;
+    const part = button.dataset.partToggle;
+    const visible = builder.togglePart(part);
+    syncBuilderUi();
+    statusText.textContent = `PS BÄR · ${part} ${visible ? 'an' : 'aus'}`;
+  });
+});
+
+colorSwatches.forEach((button) => {
+  button.addEventListener('click', () => {
+    if (!builder) return;
+    const target = button.dataset.colorTarget;
+    builder.setColor(target, button.dataset.color);
+    syncBuilderUi();
+    statusText.textContent = `PS BÄR · ${target} Farbe geändert`;
   });
 });
 
 builderSave.addEventListener('click', () => {
   if (!builder) return;
   builder.save();
-  statusText.textContent = 'PS BÄR · Bausatz gespeichert';
+  statusText.textContent = 'PS BÄR · Stoffi gespeichert';
 });
 
 builderReset.addEventListener('click', () => {
   if (!builder) return;
   builder.reset();
   syncBuilderUi();
-  statusText.textContent = 'PS BÄR · Original-Proportionen';
+  statusText.textContent = 'PS BÄR · Original wiederhergestellt';
 });
 
 function makeNote(text, color, position, scale = 0.30) {
@@ -248,7 +308,7 @@ function animate() {
   if (usingMaster) psBear.update(dt);
   else psBear.update(elapsed, dt);
 
-  // Alpha builder reapplies the chosen proportions after animation updates.
+  // The builder keeps the chosen kit dimensions applied while the preview animates.
   builder?.apply();
 
   notes.forEach((note, i) => {
