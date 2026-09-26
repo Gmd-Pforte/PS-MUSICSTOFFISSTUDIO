@@ -1,0 +1,110 @@
+:root {
+  --bg: #05060a;
+  --panel: rgba(8, 11, 18, 0.72);
+  --panel-strong: rgba(10, 13, 22, 0.9);
+  --line: rgba(127, 226, 255, 0.18);
+  --cyan: #5be7ff;
+  --pink: #ff58d6;
+  --violet: #916dff;
+  --text: #f7f8fb;
+  --muted: #aab4c4;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+body { color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; touch-action: none; }
+button, label { font: inherit; }
+button { cursor: pointer; }
+
+#app, #stage { position: fixed; inset: 0; }
+#stage { background:
+  radial-gradient(circle at 50% 25%, rgba(57, 96, 145, .18), transparent 34%),
+  radial-gradient(circle at 16% 28%, rgba(255, 55, 200, .08), transparent 27%),
+  radial-gradient(circle at 84% 38%, rgba(45, 215, 255, .08), transparent 28%),
+  linear-gradient(180deg, #080a11 0%, #040509 76%, #020306 100%);
+}
+#stage canvas { display: block; width: 100%; height: 100%; }
+
+.glass {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 50px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255,255,255,.025);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.brand-panel {
+  position: fixed; z-index: 20; top: 16px; left: 16px;
+  padding: 14px 16px; border-radius: 16px; min-width: 225px;
+  pointer-events: none;
+}
+.brand-panel .eyebrow { color: var(--cyan); font-size: 10px; font-weight: 800; letter-spacing: .24em; }
+.brand-panel h1 {
+  margin: 3px 0 1px; font-size: 20px; line-height: 1.05; letter-spacing: .08em;
+  background: linear-gradient(90deg, var(--pink), var(--violet), var(--cyan));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.brand-panel p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+
+.status-panel {
+  position: fixed; z-index: 20; top: 16px; right: 16px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-radius: 999px; color: #dce5f1; font-size: 12px;
+  pointer-events: none;
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+
+.control-panel {
+  position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); bottom: 16px;
+  width: min(920px, calc(100vw - 24px));
+  padding: 12px; border-radius: 18px;
+}
+.control-group { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
+.control, .secondary, .upload-button {
+  appearance: none; border: 1px solid rgba(134, 223, 255, .14); color: #f7f8fb;
+  background: rgba(11, 15, 24, .86); border-radius: 12px; padding: 10px 13px;
+  transition: .18s ease; user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.control:hover, .control.active, .secondary:hover, .upload-button:hover {
+  border-color: rgba(91, 231, 255, .52);
+  box-shadow: 0 0 20px rgba(60, 223, 255, .09), inset 0 0 20px rgba(255, 88, 214, .035);
+  background: rgba(15, 21, 33, .94);
+}
+.control.active { color: #fff; }
+.control span { margin-left: 3px; font-weight: 700; font-size: 12px; }
+button:disabled { opacity: .38; cursor: not-allowed; }
+
+.audio-row { margin-top: 9px; display: flex; align-items: center; justify-content: center; gap: 7px; flex-wrap: wrap; }
+#voiceFile { display: none; }
+.upload-button { font-weight: 750; font-size: 12px; cursor: pointer; }
+.secondary { font-size: 12px; font-weight: 700; }
+
+.audio-meter {
+  margin: 10px auto 0; width: min(560px, 90%); height: 5px;
+  background: rgba(255,255,255,.055); border-radius: 999px; overflow: hidden;
+}
+#meterFill {
+  width: 0%; height: 100%; border-radius: inherit;
+  background: linear-gradient(90deg, var(--cyan), var(--violet), var(--pink));
+  box-shadow: 0 0 18px rgba(91, 231, 255, .25);
+  transition: width .04s linear;
+}
+.hint { margin: 8px 6px 0; text-align: center; color: #8792a4; font-size: 10px; line-height: 1.35; }
+
+.camera-help {
+  position: fixed; z-index: 18; right: 16px; bottom: 190px;
+  padding: 8px 10px; border-radius: 10px; color: #8f9aae; font-size: 10px;
+  pointer-events: none;
+}
+
+@media (max-width: 700px) {
+  .brand-panel { top: 10px; left: 10px; padding: 11px 12px; min-width: 0; }
+  .brand-panel h1 { font-size: 16px; }
+  .brand-panel p { font-size: 10px; }
+  .status-panel { top: 10px; right: 10px; font-size: 10px; }
+  .control-panel { bottom: 10px; padding: 9px; width: calc(100vw - 14px); }
+  .control, .secondary, .upload-button { padding: 9px 10px; }
+  .control span { font-size: 11px; }
+  .hint { display: none; }
+  .camera-help { display: none; }
+}
