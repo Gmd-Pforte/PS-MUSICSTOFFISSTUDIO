@@ -22,6 +22,39 @@
       <span id="statusText">Bereit</span>
     </section>
 
+    <button id="builderToggle" class="builder-toggle glass" type="button">🧩 Bausatz</button>
+
+    <aside id="builderPanel" class="builder-panel glass" aria-label="PS BÄR Bausatz">
+      <div class="builder-head">
+        <div>
+          <div class="eyebrow">CHARACTER 01</div>
+          <h2>PS BÄR · BAUSATZ</h2>
+        </div>
+        <button id="builderClose" class="icon-button" type="button">✕</button>
+      </div>
+
+      <p class="builder-copy">Unser erster Stoffi ist die Vorlage. Mit den Reglern veränderst du seine Bauteile direkt am 3D-Modell.</p>
+
+      <div class="builder-scroll">
+        <label class="builder-row"><span>Kopfbreite</span><input type="range" min="0.75" max="1.28" step="0.01" value="1" data-build="headWidth"><output>100%</output></label>
+        <label class="builder-row"><span>Kopfhöhe</span><input type="range" min="0.78" max="1.24" step="0.01" value="1" data-build="headHeight"><output>100%</output></label>
+        <label class="builder-row"><span>Schnauze</span><input type="range" min="0.72" max="1.28" step="0.01" value="1" data-build="muzzleSize"><output>100%</output></label>
+        <label class="builder-row"><span>Ohren</span><input type="range" min="0.72" max="1.28" step="0.01" value="1" data-build="earSize"><output>100%</output></label>
+        <label class="builder-row"><span>Augengröße</span><input type="range" min="0.72" max="1.22" step="0.01" value="1" data-build="eyeSize"><output>100%</output></label>
+        <label class="builder-row"><span>Augenabstand</span><input type="range" min="0.78" max="1.22" step="0.01" value="1" data-build="eyeSpacing"><output>100%</output></label>
+        <label class="builder-row"><span>Körperbreite</span><input type="range" min="0.75" max="1.28" step="0.01" value="1" data-build="bodyWidth"><output>100%</output></label>
+        <label class="builder-row"><span>Körperhöhe</span><input type="range" min="0.82" max="1.20" step="0.01" value="1" data-build="bodyHeight"><output>100%</output></label>
+        <label class="builder-row"><span>Armlänge</span><input type="range" min="0.75" max="1.25" step="0.01" value="1" data-build="armLength"><output>100%</output></label>
+        <label class="builder-row"><span>Beinlänge</span><input type="range" min="0.75" max="1.25" step="0.01" value="1" data-build="legLength"><output>100%</output></label>
+        <label class="builder-row"><span>Pfoten</span><input type="range" min="0.78" max="1.25" step="0.01" value="1" data-build="pawSize"><output>100%</output></label>
+      </div>
+
+      <div class="builder-actions">
+        <button id="builderSave" class="secondary" type="button">💾 Speichern</button>
+        <button id="builderReset" class="secondary" type="button">↺ PS BÄR Original</button>
+      </div>
+    </aside>
+
     <section class="control-panel glass" aria-label="Avatar Steuerung">
       <div class="control-group">
         <button class="control active" data-action="idle">🧸 <span>Idle</span></button>
@@ -42,7 +75,7 @@
       <div class="audio-meter" aria-label="Sprachaktivität">
         <div id="meterFill"></div>
       </div>
-      <p class="hint">Audio-Upload = erster automatischer Schnauzen-/Mund-Sync. Für späteren echten Phonem-Sync ist die Figur bereits modular vorbereitet.</p>
+      <p class="hint">Bausatz = PS BÄR direkt formen · Audio = erster automatischer Mund-Sync.</p>
     </section>
 
     <div class="camera-help glass">Ziehen = drehen · Mausrad / Pinch = Zoom</div>
