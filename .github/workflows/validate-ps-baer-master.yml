@@ -7,18 +7,25 @@ on:
       - 'assets/characters/ps_baer/model/PS_BAER_MASTER.glb'
       - 'assets/characters/ps_baer/config/ps_baer.json'
       - 'scripts/validate_ps_baer_glb.py'
+      - '.github/workflows/validate-ps-baer-master.yml'
   pull_request:
     paths:
       - 'assets/characters/ps_baer/model/PS_BAER_MASTER.glb'
       - 'assets/characters/ps_baer/config/ps_baer.json'
       - 'scripts/validate_ps_baer_glb.py'
+      - '.github/workflows/validate-ps-baer-master.yml'
 
 jobs:
   validate:
-    if: ${{ hashFiles('assets/characters/ps_baer/model/PS_BAER_MASTER.glb') != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Validate GLB contract
-        run: python3 scripts/validate_ps_baer_glb.py
+      - name: Validate GLB contract when master exists
+        shell: bash
+        run: |
+          if [ -f assets/characters/ps_baer/model/PS_BAER_MASTER.glb ]; then
+            python3 scripts/validate_ps_baer_glb.py
+          else
+            echo "PS_BAER_MASTER.glb is not in the repository yet. Structure is ready."
+          fi
