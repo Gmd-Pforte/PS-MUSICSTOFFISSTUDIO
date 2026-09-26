@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="theme-color" content="#06070b" />
+  <title>STOFFIS STUDIO · PS BÄR</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main id="app">
+    <div id="stage" aria-label="3D-Bühne für PS BÄR"></div>
+
+    <header class="brand-panel glass">
+      <div class="eyebrow">PS AI MUSIC</div>
+      <h1>STOFFIS STUDIO</h1>
+      <p>Character 01 · PS BÄR</p>
+    </header>
+
+    <section class="status-panel glass">
+      <span class="dot"></span>
+      <span id="statusText">Bereit</span>
+    </section>
+
+    <section class="control-panel glass" aria-label="Avatar Steuerung">
+      <div class="control-group">
+        <button class="control active" data-action="idle">🧸 <span>Idle</span></button>
+        <button class="control" data-action="wave">👋 <span>Winken</span></button>
+        <button class="control" data-action="walk">🚶 <span>Laufen</span></button>
+        <button class="control" data-action="look">👀 <span>Umschauen</span></button>
+        <button class="control" data-action="happy">😊 <span>Freude</span></button>
+        <button class="control" data-action="sad">🥺 <span>Traurig</span></button>
+      </div>
+
+      <div class="audio-row">
+        <label class="upload-button" for="voiceFile">🎙️ Sprachclip laden</label>
+        <input id="voiceFile" type="file" accept="audio/*" />
+        <button id="playVoice" class="secondary" disabled>▶ Abspielen</button>
+        <button id="stopVoice" class="secondary" disabled>■ Stop</button>
+      </div>
+
+      <div class="audio-meter" aria-label="Sprachaktivität">
+        <div id="meterFill"></div>
+      </div>
+      <p class="hint">Audio-Upload = erster automatischer Schnauzen-/Mund-Sync. Für späteren echten Phonem-Sync ist die Figur bereits modular vorbereitet.</p>
+    </section>
+
+    <div class="camera-help glass">Ziehen = drehen · Mausrad / Pinch = Zoom</div>
+
+    <audio id="voiceAudio" preload="auto"></audio>
+  </main>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
